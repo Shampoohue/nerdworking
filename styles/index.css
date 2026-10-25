@@ -1,0 +1,259 @@
+body {
+    margin: 0%;
+    background-color: rgb(163, 209, 207);
+    background-image: url("../img/ocean.gif");
+    background-size: cover;
+    background-attachment: fixed;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+header {
+    background-color: rgba(56, 39, 117, 0.909);
+    padding: 1%;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    align-items: center;
+    gap: 10%;
+    color: rgb(192, 223, 223);
+    position: fixed;
+    height: 3rem;
+    font-size: 100%;
+    width: 100%;
+    top: 0;
+    backdrop-filter: blur(4px);
+    box-shadow: 5px 5px 5px rgba(23, 23, 23, 0.2);
+    z-index: 5;
+}
+
+.logo {
+    margin-left: 5%;
+    font-size: 150%;
+    font-weight: bold;
+}
+
+.writer {
+    background-color: rgba(108, 97, 206, 0.721);
+    border-color: rgb(205, 224, 245);
+    backdrop-filter: blur(4px);
+    box-shadow: 5px 5px 5px rgba(23, 23, 23, 0.2);
+    border-radius: 150px;
+    width: 100%;
+    font-size: 100%;
+    padding: 0.6em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    border-style: solid;
+    justify-self: center;
+    color: rgb(189, 213, 213);
+    box-sizing: border-box;
+}
+
+#search::placeholder{
+    color: rgb(159, 154, 225);
+}
+
+.buttons {
+    justify-self: end;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin-right: 3.5em;
+}
+
+.buttons button {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-style: none;
+    border-radius: 200px;
+    padding: 1em;
+    color: rgb(205, 219, 219);
+    position:sticky;
+}
+
+#notif {
+    background-color: rgb(90, 95, 224);
+}
+
+#notif:hover {
+    background-color: rgb(62, 66, 188);
+}
+
+#notif:active {
+    color: rgb(142, 183, 183);
+    background-color: rgb(62, 66, 188);
+}
+
+#signup {
+    background-color: rgb(70, 129, 223);
+}
+
+#signup:hover {
+    background-color: rgb(46, 94, 172);
+}
+
+#signup:active {
+    color: rgb(142, 183, 183);
+    background-color: rgb(22, 60, 122);
+}
+
+#signin {
+    background-color: rgb(24, 160, 126);
+}
+
+#signin:hover {
+    background-color: rgb(16, 125, 98);
+}
+
+#signin:active {
+    color: rgb(142, 183, 183);
+    background-color: rgb(7, 86, 66);
+}
+
+#signup, #signin{
+    margin-left: 0.7em;
+}
+
+#notheader {
+    margin-top: 5.5rem;
+    margin-bottom: 6%;
+    margin-left: 10%;
+    margin-right: 10%;
+    display: flex;
+    justify-content: center;
+}
+
+.maincolumn{
+    margin: 1%;
+}
+
+.other {
+    width: 25%;
+}
+
+.posts {
+    width: 40%;
+}
+
+.anun {
+    width: 30%;
+}
+
+.card{
+    background-color: rgba(15, 3, 249, 0.3);
+    backdrop-filter: blur(4px);
+    border-radius: 5px;
+    border-top: 1px solid rgba(255,255,255,0.5);
+    border-left: 1px solid rgba(255,255,255,0.5);
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.2);
+    color: #fff;
+    margin-bottom: 6%;
+    overflow-y: hidden;
+    box-sizing: border-box;
+}
+
+.card .title{
+    background-color: rgba(15, 3, 249, 0.5);
+    width: 100%;
+    margin: 0;
+    font-weight: bold;
+    font-size: 180%;
+    padding: 4%;
+    padding-bottom: 1%;
+    box-sizing: border-box;
+}
+
+.post:hover {
+    transform: translateY(-5%);
+}
+
+.card .bodytext{
+    padding: 1.5em;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+}
+
+.card .usersets{
+    font-size: 140%;
+    padding: 0.6em;
+}
+
+.card.others{
+    font-weight: bold;
+}
+
+.card.others:hover{
+    background-color: rgba(15, 3, 249, 0.7);
+}
+
+.title.newtext{
+    padding: 4%;
+    font-size: 100%;
+}
+
+.tags {
+    padding: 5%;
+    padding-top: 1%;
+    padding-bottom: 2%;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tags button {
+    font-size: 100%;
+    padding: 0.2rem 0.6rem;
+    background: rgba(53, 57, 195, 0.6);
+    border-radius: 150px;
+    font-weight: bold;
+    border-style: none;
+    color: #fff;
+}
+
+.tags button:hover{
+    background: rgba(26, 29, 116, 0.7);
+}
+
+.tags button:active{
+    background: rgba(10, 12, 65, 0.9);
+    color: #9ca8af;
+}
+
+.card .answer{
+    background-color: rgba(15, 3, 249, 0.3);
+    width: 100%;
+    margin: 0;
+    padding: 2%;
+    padding-left: 4%;
+    padding-right: 4%;
+    box-sizing: border-box;
+}
+
+.answerwrite{
+    padding: 0.4em;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+.anuncio:hover {
+    transform: translateY(-5%);
+}
+
+.anuncio .title {
+    font-size: 130%;
+    background-color: transparent;
+}
+
+.bodytext.anuncio{
+    margin-top: 0;
+}
+
+.bar {
+    height: 0.2em;
+    width: 100%;
+    margin-top: 1em;
+    background-color: #fff;
+}
