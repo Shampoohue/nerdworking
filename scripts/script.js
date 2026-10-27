@@ -1,7 +1,7 @@
 function create(param = 1) {
 
     document.body.innerHTML = `<header>
-                                    <div class="logo" style="justify-self: start;" onclick="focusindex()">NERDWORKING</div>
+                                    <div class="logo" style="justify-self: start;" onclick="focusindex()">🦊︎ NERDWORKING</div>
                                     <input id="search" class="writer" type="text" placeholder="🔍︎ Busqueda" aria-label="Search">
                                     <div class="buttons"><button id="notif">🔔︎</button><button id="signup">Registrate</button><button id="signin">Inicia Session</button></div>
                                 </header>` + document.body.innerHTML;
@@ -62,7 +62,7 @@ function makenews(title, text, tags, multm) {
 function makecomment(user, title, text) {
     return `<div class="card post" onclick="focuspost(this)">
                 <div class="title"><div class="twoinone">
-                    <div class="usericon" onclick="event.stopPropagation(); focususer(this)"></div>
+                    <div class="usericon reze" onclick="event.stopPropagation(); focususer(this)"></div>
                     <div><div class="weaktext superweaktext" onclick="event.stopPropagation(); focususer(this)">` + user + `</div>` + title + `</div>
                 </div></div>
                 <div class="bodytext">` + text + `</div>

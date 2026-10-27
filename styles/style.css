@@ -1,15 +1,16 @@
 body {
     margin: 0%;
-    background-color: rgb(227, 241, 241);
-  
+    background-color: rgba(21, 21, 33, 1);
+    background-image: url(/img/campana.png);
+    
     background-size: cover;
     background-attachment: fixed;
     box-sizing: border-box;
-    font-family: sans-serif;
+    font-family: Inter, Helvetica, "sans-serif";
 }
 
 header {
-    background-color: rgba(56, 39, 117, 0.909);
+    background-color: rgba(30, 30, 45, 0.9);
     padding: 1%;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
@@ -29,14 +30,15 @@ header {
 
 .logo {
     justify-self: start;
+    color: rgb(234, 169, 58);
     margin-left: 5%;
     font-size: 150%;
     font-weight: bold;
 }
 
 .writer {
-    background-color: rgba(108, 97, 206, 0.721);
-    border-color: rgb(205, 224, 245);
+    background-color: rgba(33, 43, 72, 0.8);
+    border-color: rgb(0, 158, 247);
     backdrop-filter: blur(4px);
     box-shadow: 5px 5px 5px rgba(23, 23, 23, 0.2);
     border-radius: 150px;
@@ -47,7 +49,7 @@ header {
     padding-right: 1.5em;
     border-style: solid;
     justify-self: center;
-    color: rgb(189, 213, 213);
+    color: rgb(205, 224, 245);
     box-sizing: border-box;
 }
 
@@ -75,17 +77,17 @@ header {
     position:sticky;
 }
 
-#notif, .answer.buttons input::file-selector-button {
-    background-color: rgb(90, 95, 224);
+#notif {
+    background-color: rgb(234, 169, 58);
 }
 
-#notif:hover, .answer.buttons input::file-selector-button:hover {
-    background-color: rgb(62, 66, 188);
+#notif:hover {
+    background-color: rgb(188, 105, 10);
 }
 
-#notif:active, .answer.buttons input::file-selector-button:active {
-    color: rgb(142, 183, 183);
-    background-color: rgb(62, 66, 188);
+#notif:active {
+    color: rgb(234, 169, 58);
+    background-color: rgb(151, 72, 3);
 }
 
 #signup, .iteminblockage button{
@@ -101,15 +103,15 @@ header {
     background-color: rgb(22, 60, 122);
 }
 
-#signin {
+#signin, .answer.buttons input::file-selector-button  {
     background-color: rgb(24, 160, 126);
 }
 
-#signin:hover {
+#signin:hover, .answer.buttons input::file-selector-button:hover  {
     background-color: rgb(16, 125, 98);
 }
 
-#signin:active {
+#signin:active, .answer.buttons input::file-selector-button:active  {
     color: rgb(142, 183, 183);
     background-color: rgb(7, 86, 66);
 }
@@ -144,7 +146,7 @@ header {
 }
 
 .card{
-    background-color: rgba(15, 3, 249, 0.3);
+    background-color: rgba(27, 27, 45, 0.8);
     backdrop-filter: blur(4px);
     border-radius: 5px;
     border-top: 1px solid rgba(255,255,255,0.5);
@@ -157,7 +159,7 @@ header {
 }
 
 .card .title{
-    background-color: rgba(15, 3, 249, 0.5);
+    background-color: rgba(43, 43, 64, 0.9);
     width: 100%;
     margin: 0;
     font-weight: bold;
@@ -168,7 +170,7 @@ header {
 }
 
 .post:not(.mainpost):hover {
-    transform: translateY(-5%);
+    transform: translateY(-0.8%);
 }
 
 .card .bodytext{
@@ -184,10 +186,13 @@ header {
 
 .card.others{
     font-weight: bold;
+    background-color: rgba(33, 43, 72, 0.7);
+    color: rgb(0, 158, 247);
 }
 
 .card.others:hover{
-    background-color: rgba(15, 3, 249, 0.7);
+    background-color: rgb(234, 169, 58);
+    color: rgb(81, 65, 48);
 }
 
 .title.newtext{
@@ -208,11 +213,11 @@ header {
 .tags button {
     font-size: 100%;
     padding: 0.2rem 0.6rem;
-    background: rgba(24, 27, 117, 0.6);
+    background: rgba(33, 46, 72, 0.9);
     border-radius: 150px;
     font-weight: bold;
     border-style: none;
-    color: #fff;
+    color: rgb(185, 229, 255);
 }
 
 .tags button:hover{
@@ -225,7 +230,7 @@ header {
 }
 
 .card .answer{
-    background-color: rgba(15, 3, 249, 0.3);
+    background-color: rgba(43, 43, 64, 0.9);
     width: 100%;
     height: 3.5em;
     margin: 0;
@@ -252,8 +257,8 @@ header {
 }
 
 .like {
-    background-color: rgb(8, 8, 113);
-    color: #fff;
+    background-color: rgb(0, 158, 247);
+    color: rgba(33, 43, 72, 0.7);
     white-space: nowrap;
     overflow: hidden;
     border-style: none;
@@ -268,8 +273,9 @@ header {
 }
 
 .like.clicked {
-    background-color: rgb(197, 128, 228);
-    color: rgb(85, 24, 109);
+    background-color: rgb(234, 169, 58);
+    font-weight: bolder;
+    color: rgb(81, 65, 48);
 }
 
 .meinteresa {
@@ -293,7 +299,7 @@ header {
 }
 
 .anuncio:hover {
-    transform: translateY(-5%);
+    transform: translateY(-1.4%);
 }
 
 .anuncio .title {
@@ -327,7 +333,15 @@ header {
     width: 4em; 
     height: 4em; 
     border-radius: 100%; 
-    background-color: rgb(151, 107, 226);
+    background-color: rgb(234, 169, 58);
+    background-image: url(/img/john.jpg);
+    background-size: cover;
+}
+
+
+.reze{
+    background-image: url(/img/reze.jpg);
+    background-size: cover;
 }
 
 .post .usericon, .iteminblockage .usericon {
@@ -341,7 +355,7 @@ header {
 }
 
 .title .superweaktext {
-    color: rgb(147, 186, 206);
+    color: rgb(185, 229, 255);
 }
 
 .blockage {
