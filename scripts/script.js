@@ -3,7 +3,7 @@ function create(param = 1) {
     document.body.innerHTML = `<header>
                                     <div class="logo" style="justify-self: start;" onclick="focusindex()">🦊︎ NERDWORKING</div>
                                     <input id="search" class="writer" type="text" placeholder="🔍︎ Busqueda" aria-label="Search">
-                                    <div class="buttons"><button id="notif">🔔︎</button><button id="signup">Registrate</button><button id="signin">Inicia Session</button></div>
+                                    <div class="buttons"><button id="notif">🔔︎</button><button id="signup">Registrate</button><button id="signin">Inicia Sesión</button></div>
                                 </header>` + document.body.innerHTML;
 
     document.getElementById("other").innerHTML = `<div class="card others" onclick="focususer()"><div class="usersets">🏘 Mis Publicaciones</div></div>
