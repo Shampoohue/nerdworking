@@ -1,4 +1,4 @@
-Requerimientos para inicializar la aplicación:
-Descargar pips de flask y sqlite
-Usar el script de python de init_sql
-Usar el script de app
+Requerimientos para inicializar la aplicación:<br>
+Descargar pips de flask y sqlite<br>
+Usar el script de python de init_sql<br>
+Usar el script de app<br>
