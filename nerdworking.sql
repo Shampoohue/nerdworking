@@ -2,12 +2,12 @@ CREATE TABLE IF NOT EXISTS usuario(
     matricula INTEGER UNIQUE NOT NULL,
     nombres TEXT NOT NULL, 
     apepaterno TEXT NOT NULL,
-    apematerno TEXT,
-    semestre INTEGER,
+    apematerno TEXT DEFAULT '',
+    semestre INTEGER DEFAULT 1,
     carrera TEXT NOT NULL CHECK(carrera IN ('Arquitectura', 'Ing. Agrónomo', 'Ing. Biomédica', 'Ing. Civil', 'Ing. en Ciencias Ambientales', 'Ing. en Energías Renovables', 'Ing. en Materiales', 'Ing. en Semiconductores', 'Ing. en Sistemas de Información', 'Ing. en Tecnología Electrónica', 'Ing. Industrial y de Sistemas', 'Ing. Mecatrónica', 'Ing. Metalúrgica', 'Ing. Minero', 'Ing. Químico', 'Lic. de Químico en Alimentos', 'Lic. en Administración', 'Lic. en Administración Pública', 'Lic. en Antropología', 'Lic. en Artes Escénicas', 'Lic. en Artes Plásticas', 'Lic. en Biología', 'Lic. en Ciencias de la Computación', 'Lic. en Ciencias de la Comunicación', 'Lic. en Ciencias Genómicas', 'Lic. en Ciencias Nutricionales', 'Lic. en Contaduría Pública', 'Lic. en Cultura Física y Deporte', 'Lic. en Derecho', 'Lic. en Diseño Gráfico', 'Lic. en Economía', 'Lic. en Educación', 'Lic. en Enfermería', 'Lic. en Enseñanza del Inglés', 'Lic. en Finanzas', 'Lic. en Física', 'Lic. en Física Médica', 'Lic. en Fisioterapia', 'Lic. en Geología', 'Lic. en Historia', 'Lic. en Lingüística', 'Lic. en Literaturas Hispánicas', 'Lic. en Logística', 'Lic. en Matemáticas', 'Lic. en Mercadotecnia', 'Lic. en Música', 'Lic. en Negocios y Comercio Internacionales', 'Lic. en Odontología', 'Lic. en Psicología', 'Lic. en Química', 'Lic. en Seguridad Pública', 'Lic. en Sociología', 'Lic. en Sustentabilidad', 'Lic. en Trabajo Social', 'Lic. en Turismo', 'Medicina', 'Médico Veterinario Zootecnista', 'Químico Biólogo Clínico')),
     correo TEXT AS (CONCAT('a', matricula, '@unison.mx')) STORED,
     psswrd TEXT NOT NULL,
-    adminuser INTEGER CHECK(aceptable IN (0, 1)) DEFAULT 0,
+    adminuser INTEGER CHECK(adminuser IN (0, 1)) DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS everyman(
