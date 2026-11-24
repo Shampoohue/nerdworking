@@ -1,0 +1,21 @@
+{% extends "header.html" %}
+{% block posts %}
+    {% block middle %}{% endblock %}
+{% endblock %}
+{% block news %}
+    <div class="title">Noticias</div>
+    {% for n in news %}
+        <a href="{{url_for('noticia', id=n.id)}}"><div class="bodytext anuncio">
+            <div class="title">{{ n.titulo }}</div>
+            {{ n.body }}
+            <div onclick="event.stopPropagation();"><div class="tags">
+                {% for t in n.tags %}
+                    <a href="{{url_for('search_tags', search=t)}}"><button>{{ t }}</button></a>
+                {% endfor %}
+            </div>
+            <div class="bar"></div></div>
+        </div></a>
+    {% else %}
+        <div class="nobodycare">Parece que no hay noticias...</div><br>
+    {% endfor %}
+{% endblock %}

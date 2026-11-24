@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NERDWORKING</title>
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='img/icon.png')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body style="background-image: url({{url_for('static', filename='img/campana.png')}});">
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+    <script type="module">
+        let param = 1;
+        let posts = {{posts | tojson}};
+        let noticias = {{noticias | tojson}};
+
+        set_staticimg("{{url_for('static', filename='img/')}}");
+
+        document.body.innerHTML = `<header>
+                                        <div class="logo" style="justify-self: start;" onclick="focusindex()">NERDWORKING</div>
+                                        <input id="search" class="writer" type="text" placeholder="🔍︎ Busqueda" aria-label="Search">
+                                        <div class="buttons" id="headerbuttons"><button id="signup">Registrate</button><button id="signin">Inicia Session</button></div>
+                                    </header>
+                                    <div class="notheader" id="notheader">
+                                        <div id="other" class="maincolumn other"></div>
+                                    </div>` + document.body.innerHTML;
+
+        if ({{loggedin}}){ 
+            document.getElementById("other").innerHTML = `<div class="card others" onclick="focususer(` + matri +`)">{% if loggedin %}<div class="usersets">🖹 Mis Publicaciones</div></div>
+                                                    <div class="card others"><div class="usersets">🔔︎ Notificaciones</div></div>
+                                                    <div class="card others"><div class="usersets">🗨︎ Mensajes</div></div>
+                                                    <div class="card others"><div class="usersets">⚙︎ Configuración</div></div> {% endif %}`;
+            document.getElementById("headerbuttons").innerHTML = `<button id="notif">🔔︎</button>`;
+        }
+
+        if(param === 1){ //main page
+            document.getElementById("notheader").innerHTML += `<div id="posts" class="maincolumn posts">
+                                </div>
+                                <div class="maincolumn anun"><div id="news" class="card">
+                                    <div class="title">Noticias</div>
+                                </div></div>`;
+            if ({{loggedin}}){
+                document.getElementById("posts").innerHTML += ``;
+            }
+            for(let post in posts){
+                let p = posts[post];
+                document.getElementById("posts").innerHTML += makepost(p["id"], p["nombre"], p["nombre"] + " ー " + p["tiempo"] + "<br>" + p["carrera"], p["creador"], p["titulo"], p["body"], p["tags"], p["imagen"], loggedin);
+            }
+            for (let noticia in noticias) {
+                let n = noticias[noticia];
+                document.getElementById("news").innerHTML += makenews(n["id"], n["titulo"], n["body"], n["tags"], n["imagen"]);
+            }
+        } 
+        else if(param === 2){ //focusing on a specific post
+            document.getElementById("notheader").innerHTML += `<div id="posts" class="maincolumn posts">
+                                </div>
+                                <div class="maincolumn anun"><div id="news" class="card">
+                                    <div class="title">Gente que le Interesa esta Publicación</div>
+                                </div></div>`;
+            document.getElementById("posts").innerHTML += makemainpost(posts["nombre"], posts["nombre"] + " ー " + posts["tiempo"] + "<br>" + posts["carrera"], posts["creador"], posts["titulo"], posts["body"], posts["tags"], posts["imagen"]);
+            if(responses != 0){
+                document.getElementById("posts").innerHTML += `<div class="card"><div class="title weaktext superweaktext">Respuestas</div></div>`;
+            }
+            for(let response in responses){
+                let r = responses[response];
+                document.getElementById("posts").innerHTML += makecomment(r["nombre"] + " ー " + r["tiempo"] + "<br>" + r["carrera"], r["titulo"], r["body"]);
+            }
+        }
+        else if(param === 3){
+            document.getElementById("posts").innerHTML = makemainnew("NASA Spaceapps blah blah blah", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", ["HTML", "CSS", "JavaScript", "PHP", "MySQL"], "") + document.getElementById("posts").innerHTML
+        }
+        else {
+            for (let i = 0; i < 5; i++) {
+                document.getElementById("posts").innerHTML += makepost("John Ingenieria", "Ayudenme con mi proyecto", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", ["HTML", "CSS", "JavaScript", "PHP", "MySQL"], "");
+            }
+        }
+    </script>
+</body> 
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='img/icon.png')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body style="background-image: url({{url_for('static', filename='img/campana.png')}});">
+    <header>
+        <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;">NERDWORKING</div></a>
+        <input id="search" class="writer" type="text" placeholder="🔍︎ Busqueda" aria-label="Search">
+        <div class="buttons" id="headerbuttons">{% if loggedin %}<button id="notif">🔔︎</button>{% else %}<button id="signup">Registrate</button><button id="signin">Inicia Session</button>{% endif %}</div>
+    </header>
+    <div class="notheader" id="notheader">
+        <div id="other" class="maincolumn other">{% if loggedin %}
+                <a href="{{url_for('userpage', id=user.matricula)}}"><div class="card others"><div class="usersets">🖹 Mis Publicaciones</div></div></a>
+                <div class="card others"><div class="usersets">🔔︎ Notificaciones</div></div>
+                <div class="card others"><div class="usersets">🗨︎ Mensajes</div></div>
+                <div class="card others"><div class="usersets">⚙︎ Configuración</div></div>
+                {% endif %}
+        </div>
+        <div id="posts" class="maincolumn posts">
+            {% block posts %}{% endblock %}
+        </div>
+        <div class="maincolumn anun"><div id="news" class="card">
+            {% block news %}{% endblock %}
+        </div></div>
+    </div>
+    <script>
+        document.getElementById("search").addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                let search = document.getElementById("search").value.trim();
+                if(search.charAt(0) == '#') {
+                    console.log("/search/tags/" + search.slice(1))
+                    window.location.href = "/search/tags/" + search.slice(1);
+                } else {
+                    window.location.href = "/search/" + search;
+                }
+            }
+        });
+    </script>
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+</body> 
+</html>

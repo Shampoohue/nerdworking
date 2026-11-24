@@ -1,0 +1,39 @@
+{% extends "newsonright.html" %}
+{% block middle %}
+    <div class="card"><div class="title">
+        <div class="twoinone">
+            <div class="usericon"{% if profile.imgfile == None %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename='img/profile.imgfile')}});" {% endif %}></div>
+            <div>{{profile.titulo}}<br>
+            <div class="weaktext">
+                <div class="superweaktext">{{profile.nombre}} ー {{profile.carrera}}<br>
+                Semestre #5<br></div></div></div></div>
+                <div class="weaktext">{{profile.body}}</div>
+        <div class="tags" style="font-size: 60%; font-weight: lighter;">
+            {% for t in profile.tags %}
+                <a href="{{url_for('search_tags', search=t)}}"><button>{{ t }}</button></a>
+            {% endfor %}
+        </div>
+    </div></div>
+    {% for p in posts %}
+        <div class="card post" onclick="window.location.href = '/post/' + {{p.id}};">
+            <div class="title"><div class="twoinone">
+                <a onclick="event.stopPropagation();" href="{{url_for('userpage', id=p.creador)}}"><div {% if p.iconfile == None %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename='img/p.iconfile')}});" {% endif %} class="usericon" onclick="event.stopPropagation();"></div></a>
+                <div><a onclick="event.stopPropagation();" href="{{url_for('userpage', id=p.creador)}}"><div class="weaktext superweaktext">{{p.nombre}} ー {{p.tiempo}}<br>{{p.carrera}}</div></a>{{p.titulo}}</div>
+            </div></div>
+            <div class="bodytext">{{p.body}}</div>
+            <div onclick="event.stopPropagation();"><div class="tags">
+                {% for t in p.tags %}
+                    <a href="{{url_for('search_tags', search=t)}}"><button>{{ t }}</button></a>
+                {% endfor %}
+            </div>
+            {% if loggedin %}
+                <div class="answer">
+                    <button class="like" onclick="clicklike()">♥ <div class="meinteresa">Me interesa!</div></button>
+                    <input id="answer" class="writer answerwrite" onclick="openresponsemaker('{{ p.user }}')" type="text" placeholder="Responde a esta publicación" aria-label="Search">
+                </div>
+            {% endif %}
+        </div></div>
+    {% else %}
+        <div class="nobodycare">Parece que {{profile.nombre}} no tiene publicaciones...</div>
+    {% endfor %}
+{% endblock %}

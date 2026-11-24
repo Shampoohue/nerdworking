@@ -1,0 +1,31 @@
+{% extends "newsonright.html" %}
+{% block middle %}
+    {% if loggedin %}
+    <div class="card">
+        <div class="title newtext">Escribe una nueva publicación<br>
+        <input id="newtext" class="writer" type="text" placeholder="Crea una publicación" aria-label="Search" onclick="openpostmaker()">
+    </div></div>
+    {% endif %}
+    {% for p in posts %}
+        <div class="card post" onclick="window.location.href = '/post/' + {{p.id}};">
+            <div class="title"><div class="twoinone">
+                <a onclick="event.stopPropagation();" href="{{url_for('userpage', id=p.creador)}}"><div {% if (p.iconfile == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename='img/p.iconfile')}});" {% endif %} class="usericon" onclick="event.stopPropagation();"></div></a>
+                <div><a onclick="event.stopPropagation();" href="{{url_for('userpage', id=p.creador)}}"><div class="weaktext superweaktext">{{p.nombre}} ー {{p.tiempo}}<br>{{p.carrera}}</div></a>{{p.titulo}}</div>
+            </div></div>
+            <div class="bodytext">{{p.body}}</div>
+            <div onclick="event.stopPropagation();"><div class="tags">
+                {% for t in p.tags %}
+                    <a href="{{url_for('search_tags', search=t)}}"><button>{{ t }}</button></a>
+                {% endfor %}
+            </div>
+            {% if loggedin %}
+                <div class="answer">
+                    <button class="like" onclick="clicklike(this, {{user.matricula}}, {{p.id}})">♥ <div class="meinteresa">Me interesa!</div></button>
+                    <input id="answer" class="writer answerwrite" onclick="openresponsemaker('{{ p.user }}')" type="text" placeholder="Responde a esta publicación" aria-label="Search">
+                </div>
+            {% endif %}
+        </div></div>
+    {% else %}
+        <div class="nobodycare">Parece que no hay publicaciones...</div>
+    {% endfor %}
+{% endblock %}

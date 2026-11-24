@@ -1,0 +1,12 @@
+{% extends "newsonright.html" %}
+{% block middle %}
+    <div class="card post mainpost">
+        <div class="title">{{ noticia.titulo }}</div>
+        <div class="bodytext">{{ noticia.body }}</div>
+        <div class="tags">
+        {% for t in noticia.tags %}
+            <a href="{{url_for('search_tags', search=t)}}"><button>{{ t }}</button></a>
+        {% endfor %}
+        </div>
+    </div>
+{% endblock %}
