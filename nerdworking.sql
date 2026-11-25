@@ -82,7 +82,7 @@ END;
 
 INSERT INTO usuario (matricula, nombres, apepaterno, apematerno, semestre, carrera, psswrd, adminuser) VALUES
 (224204735, 'Leonardo', 'Montaño', 'Lares', 5, 'Ing. en Sistemas de Información', 'wagooguspassword', 1),
-(224211540, 'Gerardo', 'Tapia', 'Fimbres', 5, 'Ing. en Sistemas de Información', 'shampoopassword', 1);
+(224211540, 'Gerardo', 'Tapia', 'Fimbres', 5, 'Ing. en Sistemas de Información', 'shampoopassword', 1),
 (224205962, 'Andrea Guadalupe', 'López', 'González', 5, 'Ing. en Sistemas de Información', 'geraldog', 1);
 
 INSERT INTO everyman (tipo, titulo, body, creator, aceptable) VALUES
