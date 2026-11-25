@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='img/icon.png')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body style="background-image: url({{url_for('static', filename='img/campana.png')}});">
+    <header>
+        <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;">NERDWORKING</div></a>
+    </header>
+    <div class="centerbox"><div class="card iteminblockage" style="width: 25%;">
+        <div class="title" style="padding: 5%;"><div style="display:flex; justify-content: center;">NERDWORKING</div><br><div class="weaktext superweaktext" style="display:flex; justify-content: center;">Iniciar Sesión</div></div>
+        <div style="padding: 3%;"><div class="bodytext superweaktext">Numero de Matricula</div>
+        <input id="matricula" class="writer answerwrite newpostwriter" type="number" placeholder="Matricula" aria-label="Matricula">
+        <div class="bodytext superweaktext">Contraseña</div>
+        <input id="password" class="writer answerwrite newpostwriter" type="password" placeholder="Contraseña" aria-label="Contraseña"></div>
+        <div class="buttons answer" style="justify-content: right;">
+            <button id="loginbtn" onclick="login()" >Iniciar Sesión</button>
+        </div>
+    </div></div>
+
+    <script>    
+    async function login() {
+        const matricula = document.getElementById('matricula').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const btn = document.getElementById('loginbtn');
+
+        if (!matricula || !password) {
+            alert('Por favor llene todos los campos.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('matricula', matricula);
+        formData.append('password', password);
+
+        btn.disabled = true;
+        try {
+            const res = await fetch('/api/login', {
+            method: 'POST',
+            body: formData
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || ('HTTP ' + res.status));
+            }
+
+            const data = await res.json();
+            console.log('Logged in:', data.loggedin);
+
+        } catch (err) {
+            console.error(err);
+            alert('Error al iniciar sesión: ' + err.message);
+        } finally {
+            btn.disabled = false;
+            window.location.href = '{{gobackto}}';
+        }
+    }
+    </script>
+</body>
+</html>

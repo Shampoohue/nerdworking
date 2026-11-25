@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='img/icon.png')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body style="background-image: url({{url_for('static', filename='img/campana.png')}});">
+    <header>
+        <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;">NERDWORKING</div></a>
+    </header>
+    <div class="centerbox"><div class="card iteminblockage">
+    <div class="title">
+        <a href="{{url_for('index')}}"><button class="cancelbutton">X</button></a>
+        <div class="twoinone">
+        <div class="usericon"></div>
+        <div class="weaktext superweaktext">{{user.nombres}} {{user.apepaterno}} {{user.apematerno}}
+            <input id="titulo" class="writer answerwrite newpostwriter" type="text" placeholder="Titulo" aria-label="Titulo">
+        </div>
+        </div>
+    </div>
+
+    <div class="bodytext">
+        <textarea id="body" class="writer answerwrite newpostwriter bodytextwriter" placeholder="Texto" aria-label="Texto"></textarea>
+        <input id="tags" class="writer answerwrite newpostwriter" type="text" placeholder="Categorias" aria-label="Categorias">
+    <div id="tagslist" class="tags"></div>
+    </div>
+    <div class="buttons answer twoinone" style="height: 100%;">
+        <input type="file" id="image" name="file" accept="image/*" />
+        <button id="publicar" onclick="publishPost()">Publicar</button>
+    </div>
+    </div></div>
+
+    <script>
+    const tags = [];
+
+    document.getElementById("tags").addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            let tag = document.getElementById("tags").value.trim();
+            if(!tags.includes(tag)){
+                document.getElementById("tagslist").innerHTML += `<button onclick="killtag(this)" style="padding-bottom: 0%; padding: 2%;">` + tag + `</button>`;
+                tags.push(tag);
+            }
+            document.getElementById("tags").value = "";
+        }
+    });
+
+    function killtag(tag){
+        tags.pop(tag.value);
+        tag.remove()
+    }
+    
+    async function publishPost() {
+        const titulo = document.getElementById('titulo').value.trim();
+        const body = document.getElementById('body').value.trim();
+        const image = document.getElementById('image');
+        const file = image.files[0]; 
+        const btn = document.getElementById('publicar');
+
+        if (!titulo) {
+            alert('Las publicaciones requieren un titulo.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('titulo', titulo);
+        formData.append('body', body);
+        formData.append('tags', tags);
+
+        if(file) {
+            formData.append('image', file);
+        }
+
+        btn.disabled = true;
+        try {
+            const res = await fetch('/api/posts', {
+            method: 'POST',
+            body: formData
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || ('HTTP ' + res.status));
+            }
+
+            const data = await res.json();
+            window.location.href = "/post/" + data.newpost
+
+        } catch (err) {
+            console.error(err);
+            alert('No se pudo publicar: ' + err.message);
+        } finally {
+            btn.disabled = false;
+        }
+    }
+    </script>
+</body>
+</html>

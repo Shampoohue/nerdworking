@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}}</title>
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='img/icon.png')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
+</head>
+<body style="background-image: url({{url_for('static', filename='img/campana.png')}});">
+    <header>
+        <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;">NERDWORKING</div></a>
+    </header>
+    <div class="centerbox"><div class="card iteminblockage">
+        <div class="title"><div class="twoinone">
+            <div class="usericon"></div>
+            <div><div class="weaktext superweaktext">John Ingenieria</div>Ayudenme con mi proyecto</div>
+        </div></div>
+        <div class="bodytext">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+        <div class="title">
+            <button class="cancelbutton" onclick="closepostmaker()">X</button>
+            <div class="twoinone">
+            <div class="usericon"></div>
+            <div><div class="superweaktext weaktext">John Ingenieria</div>Respondiendo a ` + responded + `</div>
+        </div></div>
+            <div class="bodytext"><textarea id="answer" class="writer answerwrite newpostwriter bodytextwriter" type="text" placeholder="Texto" aria-label="Search"></textarea>
+            <input id="answer" class="writer answerwrite newpostwriter" type="text" placeholder="Categorias" aria-label="Search"></div>
+            <div class="buttons answer twoinone"><input type="file" id="file" name="file" multiple/><button onclick="closepostmaker()">Publicar</button></div>
+        </div></div>
+    <script>
+        document.getElementById("search").addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                let search = document.getElementById("search").value.trim();
+                if(search.charAt(0) == '#') {
+                    console.log("/search/tags/" + search.slice(1))
+                    window.location.href = "/search/tags/" + search.slice(1);
+                } else {
+                    window.location.href = "/search/" + search;
+                }
+            }
+        });
+    </script>
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+</body> 
+</html>

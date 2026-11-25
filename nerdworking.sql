@@ -58,6 +58,14 @@ CREATE TABLE IF NOT EXISTS frommetoyou (
     FOREIGN KEY (listener) REFERENCES user(matricula) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS notif (
+    post INTEGER NOT NULL,
+    user INTEGER NOT NULL,
+    descr TEXT NOT NULL,
+    FOREIGN KEY (post) REFERENCES everyman(id) ON DELETE CASCADE,
+    FOREIGN KEY (user) REFERENCES usuario(matricula) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS respuesta (
     response INTEGER NOT NULL,
     responded INTEGER NOT NULL,
@@ -71,17 +79,6 @@ BEGIN
     DELETE FROM everyman WHERE tipo = 'Respuesta' AND id = OLD.id;
 END;
 
-CREATE TRIGGER IF NOT EXISTS addeditedtime
-AFTER UPDATE ON everyman
-BEGIN
-    UPDATE everyman
-    SET editedtime = CURRENT_TIMESTAMP
-    WHERE id = NEW.id;
-    UPDATE everyman
-    SET aceptable = 0
-    WHERE OLD.aceptable = NEW.aceptable AND id = NEW.id;    
-END;
-
 INSERT INTO usuario (matricula, nombres, apepaterno, apematerno, semestre, carrera, psswrd, adminuser) VALUES
 (224204735, 'Leonardo', 'Montaño', 'Lares', 5, 'Ing. en Sistemas de Información', 'wagooguspassword', 1),
 (224211540, 'Gerardo', 'Tapia', 'Fimbres', 5, 'Ing. en Sistemas de Información', 'shampoopassword', 1);
@@ -90,8 +87,10 @@ INSERT INTO everyman (tipo, titulo, body, creator, aceptable) VALUES
 ('Post', 'Ayudenme con mi proyecto', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 224211540, 1),
 ('Perfil', 'Gerardo Tapia Fimbres', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 224211540, 1),
 ('Perfil', 'Leonardo Montaño Lares', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 224204735, 1),
-('Respuesta', '', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 224204735, 1),
-('Post', 'Proyecto de estadisticas de diabetes', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 224204735, 1);
+('Respuesta', '', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 224204735, 1);
+
+INSERT INTO everyman (tipo, titulo, body, creator, imgfile, aceptable) VALUES
+('Post', 'Proyecto de estadisticas de diabetes', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', 224204735, 'uploads/icon.png', 1);
 
 INSERT INTO everyman (tipo, titulo, body, aceptable) VALUES
 ('Anuncio', '2026 NASA Space Apps Challenge', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 1);
@@ -112,3 +111,4 @@ INSERT INTO tiempo (año, mes, dia, hora, min, seg, everyman) VALUES
 INSERT INTO respuesta (response, responded) VALUES (4, 1);
 
 INSERT INTO interes (post, user) VALUES (5, 224211540);
+INSERT INTO interes (post, user) VALUES (1, 224204735);

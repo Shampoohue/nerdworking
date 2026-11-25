@@ -1,39 +1,16 @@
 function clicklike(button, user, post) {
-    if (button.classList.contains('clicked')){
-        button.classList.remove('clicked');
-        fetch(window.location.href = '/api/unlike',
-        {
-            method: "POST",
-            body: JSON
-            .stringify
-            ({
-            user: user,
-            post: post,
-            }),
-            headers: {
-            "Content-type": "application/json",
-            },
-        })
-            .then((response) => response.json())
-            .then((json) => console.log(json));
-
+    if (button.value == 1){
+        if (button.classList.contains('clicked')){
+            button.classList.remove('clicked');
+        }
+        fetch("/api/unlike/"+user+"/"+post)
+        .then(response => response.json())  
+        .then(json => {console.log(json)});
     } else{
         button.classList.add('clicked');
-        fetch(window.location.href = '/api/like',
-        {
-            method: "POST",
-            body: JSON
-            .stringify
-            ({
-            user: user,
-            post: post,
-            }),
-            headers: {
-            "Content-type": "application/json",
-            },
-        })
-            .then((response) => response.json())
-            .then((json) => console.log(json));
+        fetch("/api/like/"+user+"/"+post)
+        .then(response => response.json())  
+        .then(json => {console.log(json)});
     }
 }
 
@@ -97,18 +74,4 @@ function disableScroll() {
 
 function enableScroll() {
     window.onscroll = function () { };
-}
-
-async function login(matri, passw){
-    try{
-        let response = await fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({"matri": matri, "password": passw})
-        });
-        let result = await response.json();
-        return result["login"];   
-    } catch(error){
-        console.error('Error:', error);
-    }
 }

@@ -378,12 +378,14 @@ a * {
 }
 
 .iteminblockage{
+    margin-top: 6%;
     width: 40%;
-    max-height: 90%;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+}
+
+.centerbox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .newpostwriter {
@@ -420,12 +422,29 @@ textarea.newpostwriter {
 }
 
 .cancelbutton {
-    color: #fff;
+    color: #df1616;
     float: right;
     background: none!important;
     border: none;
     font-weight: bold;
-    font-size: 200%;
+    font-size: 110%;
+}
+
+.cancelbutton:active {
+    color: #7c1717!important;
+}
+
+.image {
+    padding: 5%;
+    max-width: 90%;
+    overflow: hidden;     
+}
+
+.image img{
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;      
 }
 
 @media (max-width: 600px) {
