@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS notif (
     post INTEGER NOT NULL,
     user INTEGER NOT NULL,
     descr TEXT NOT NULL,
+    checked INTEGER CHECK(checked IN (0, 1)) DEFAULT 0, 
     FOREIGN KEY (post) REFERENCES everyman(id) ON DELETE CASCADE,
     FOREIGN KEY (user) REFERENCES usuario(matricula) ON DELETE CASCADE
 );

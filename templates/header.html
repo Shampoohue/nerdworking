@@ -9,7 +9,7 @@
 </head>
 <body style="background-image: url({{url_for('static', filename='img/campana.png')}});">
     <header>
-        <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;">NERDWORKING</div></a>
+        <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;"><img style="height: 1.3rem;" src="{{url_for('static', filename='img/icon.png')}}">NERDWORKING</div></a>
         <input id="search" class="writer" type="text" placeholder="🔍︎ Busqueda" aria-label="Search">
         <div class="buttons" id="headerbuttons">{% if loggedin %}<button id="notif">🔔︎</button>{% else %}<button id="signup">Registrate</button><a href="{{url_for('login', next=request.path)}}"><button id="signin">Inicia Sesión</button></a>{% endif %}</div>
     </header>

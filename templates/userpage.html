@@ -30,7 +30,7 @@
             {% if loggedin %}
                 <div class="answer">
                     <button value="{{p.interes}}" {% if p.interes == 1 %}class="like clicked"{% else %}class="like"{% endif %} onclick="clicklike(this, {{user.matricula}}, {{p.id}})">❤ <div class="meinteresa">Me interesa!</div></button>
-                    <input id="answer" class="writer answerwrite" onclick="openresponsemaker('{{ p.user }}')" type="text" placeholder="Responde a esta publicación" aria-label="Search">
+                    <input id="answer" class="writer answerwrite" type="text" placeholder="Responde a esta publicación" aria-label="Search" onclick="open_response_maker({{p.id}});">
                 </div>
             {% endif %}
         </div></div>

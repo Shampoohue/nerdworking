@@ -379,13 +379,17 @@ a * {
 
 .iteminblockage{
     margin-top: 6%;
-    width: 40%;
+    width: 100%;
 }
 
 .centerbox{
+    padding-top: 4.5%;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-left: 30%;
+    flex-wrap: wrap;
+    max-width: 40%;
 }
 
 .newpostwriter {

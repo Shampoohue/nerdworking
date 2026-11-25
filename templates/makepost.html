@@ -11,7 +11,9 @@
     <header>
         <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;">NERDWORKING</div></a>
     </header>
-    <div class="centerbox"><div class="card iteminblockage">
+    <div class="centerbox">
+
+    <div class="card iteminblockage">
     <div class="title">
         <a href="{{url_for('index')}}"><button class="cancelbutton">X</button></a>
         <div class="twoinone">
@@ -47,15 +49,32 @@
         }
     });
 
+    const image = document.getElementById("image");
+
+    image.addEventListener('change', function () {
+        displayPicture(this);
+    });
+
+    function displayPicture(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById("showfile").setAttribute('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     function killtag(tag){
         tags.pop(tag.value);
-        tag.remove()
+        tag.remove();
     }
     
     async function publishPost() {
         const titulo = document.getElementById('titulo').value.trim();
         const body = document.getElementById('body').value.trim();
-        const image = document.getElementById('image');
         const file = image.files[0]; 
         const btn = document.getElementById('publicar');
 
@@ -67,15 +86,19 @@
         const formData = new FormData();
         formData.append('titulo', titulo);
         formData.append('body', body);
-        formData.append('tags', tags);
+        if (Array.isArray(tags) && tags.length) {
+            tags.forEach(t => formData.append('tags', t));
+        }
 
         if(file) {
             formData.append('image', file);
+        } else {
+            formData.append('image', null);
         }
 
         btn.disabled = true;
         try {
-            const res = await fetch('/api/posts', {
+            const res = await fetch('/api/posts/new', {
             method: 'POST',
             body: formData
             });
@@ -86,7 +109,7 @@
             }
 
             const data = await res.json();
-            window.location.href = "/post/" + data.newpost
+            window.location.href = "/post/" + data.newpost;
 
         } catch (err) {
             console.error(err);

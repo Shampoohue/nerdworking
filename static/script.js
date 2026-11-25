@@ -75,3 +75,7 @@ function disableScroll() {
 function enableScroll() {
     window.onscroll = function () { };
 }
+
+function open_response_maker(id){
+    window.location.href = "/reply/new/" + id;
+}

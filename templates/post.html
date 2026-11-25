@@ -10,12 +10,12 @@
     <div onclick="event.stopPropagation();"><div class="tags">
         {% for t in post.tags %}
             <a href="{{url_for('search_tags', search=t)}}"><button>{{ t }}</button></a>
-        {% endfor %}
+        {% endfor %} 
     </div>
     {% if loggedin %}
         <div class="answer">
             <button value="{{post.interes}}" {% if post.interes == 1 %}class="like clicked"{% else %}class="like"{% endif %} onclick="clicklike(this, {{user.matricula}}, {{post.id}})">❤ <div class="meinteresa">Me interesa!</div></button>
-            <input id="answer" class="writer answerwrite" onclick="openresponsemaker('{{ post.user }}')" type="text" placeholder="Responde a esta publicación" aria-label="Search">
+            <input id="answer" class="writer answerwrite" type="text" placeholder="Responde a esta publicación" aria-label="Search" onclick="open_response_maker({{post.id}});">
         </div>
     {% endif %}
     </div></div>
@@ -25,12 +25,13 @@
             <div class="card post">
                 <div class="title"><div class="twoinone">
                     <a onclick="event.stopPropagation();" href="{{url_for('userpage', id=r.creador)}}"><div {% if (r.iconfile == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename='img/' + r.iconfile)}});" {% endif %} class="usericon"></div></a>
-                    <div><a onclick="event.stopPropagation();" href="{{url_for('userpage', id=r.creador)}}"><div class="weaktext superweaktext">{{post.nombre}} ー {{post.tiempo}}<br>{{post.carrera}}</div></a>{{r.titulo}}</div>
+                    <div><a onclick="event.stopPropagation();" href="{{url_for('userpage', id=r.creador)}}"><div class="weaktext superweaktext">{{r.nombre}} ー {{r.tiempo}}<br>{{r.carrera}}</div></a>{{r.titulo}}</div>
                 </div></div>
                 <div class="bodytext">{{r.body}}</div>
+                {% if r.imagen != None %}<div class="image"><img src="{{url_for('static', filename=r.imagen)}}"></div>{% endif %}
                 {% if loggedin %}
                     <div class="answer">
-                    <input id="answer" class="writer answerwrite answercomment" onclick="openresponsemaker('{{r.nombre}}')" type="text" placeholder="Responde a esta publicación" aria-label="Search">
+                    <a href="{{url_for('make_reply', id=post.id)}}"><input id="answer" class="writer answerwrite answercomment" type="text" placeholder="Responde a esta publicación" aria-label="Search"></a>
                     </div>
                 {% endif %}
             </div>

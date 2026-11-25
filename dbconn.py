@@ -280,6 +280,20 @@ def add_post(creator, title, body, tags, image):
     
     return add_edit_everyman(instruct, values, tags, image, False)
 
+def add_reply(creator, title, body, image):
+    instruct = "INSERT INTO everyman (tipo, titulo, body, creator) VALUES ('Respuesta', ?, ?, ?)"
+    values = (title, body, creator)
+    
+    return add_edit_everyman(instruct, values, [], image, False)
+
+def add_reply_link(responded, response):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO respuesta (responded, response) VALUES (?, ?)", (responded, response,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 def make_profile(tipo, titulo, body, creador, imgfile, tags):
     instruct = """
         INSERT INTO everyman (tipo, titulo, body, creador, imgfile) VALUES (?, ?, ?, ?, ?) 
@@ -290,13 +304,11 @@ def make_profile(tipo, titulo, body, creador, imgfile, tags):
 def get_user_login(matri, password):
     conn = get_db()
     cursor = conn.cursor()
-    print(matri)
     cursor.execute("SELECT * FROM usuario WHERE matricula=?", (matri,))
     usu = {"matricula":0, "nombres":"", "apepaterno":"", "apematerno":"", "semestre":0, "carrera":"", "correo":"", "psswrd":"", "adminuser": 0}
     loggedin = False
     fetchone = cursor.fetchone()
     if not fetchone is None:
-        print("fetched a user")
         i = 0
         a = ["matricula", "nombres", "apepaterno", "apematerno", "semestre", "carrera", "correo", "psswrd", "adminuser"]
         usu = {}

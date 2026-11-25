@@ -38,8 +38,35 @@ def make_post():
     else:
         return redirect(url_for("index"))
 
-@app.route('/api/posts', methods=['POST'])
+@app.route('/reply/new/<int:id>')
+def make_reply(id):
+    user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
+    if loggedin:
+        post=get_post(id, user["matricula"], user["adminuser"])
+        return render_template("makecomment.html", user=user, post=post)
+    else:
+        return redirect(url_for("index"))
+
+@app.route('/api/posts/new', methods=['POST'])
 def create_post():
+    user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
+    if loggedin:
+        print(request.form.getlist('tags', ''))
+        title = request.form.get('titulo', '').strip()
+        if not title:
+            return jsonify(error='Las publicaciones requieren un titulo'), 400
+        body = request.form.get('body', '').strip()
+        tags = request.form.getlist('tags')
+        image = request.files.get('image')
+
+        newid = add_post(user["matricula"], title, body, tags, image)
+
+        return {"newpost":newid}
+    else:
+        return jsonify(error='No tiene un usuario.'), 400
+
+@app.route('/api/reply/new/<int:id>', methods=['POST'])
+def create_reply(id):
     user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
     if loggedin:
         print(request.form)
@@ -47,12 +74,10 @@ def create_post():
         if not title:
             return jsonify(error='Las publicaciones requieren un titulo'), 400
         body = request.form.get('body', '').strip()
-        tags = request.form.getlist('tags', [])
         image = request.files.get('image')
-
-        newid = add_post(user["matricula"], title, body, tags, image)
-
-        return {"newpost":newid}
+        newid = add_reply(user["matricula"], title, body, image)
+        add_reply_link(id, newid)
+        return {"newreply":"success!"}
     else:
         return jsonify(error='No tiene un usuario.'), 400
 
