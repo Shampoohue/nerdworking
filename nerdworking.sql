@@ -83,6 +83,7 @@ END;
 INSERT INTO usuario (matricula, nombres, apepaterno, apematerno, semestre, carrera, psswrd, adminuser) VALUES
 (224204735, 'Leonardo', 'Montaño', 'Lares', 5, 'Ing. en Sistemas de Información', 'wagooguspassword', 1),
 (224211540, 'Gerardo', 'Tapia', 'Fimbres', 5, 'Ing. en Sistemas de Información', 'shampoopassword', 1);
+(224205962, 'Andrea Guadalupe', 'López', 'González', 5, 'Ing. en Sistemas de Información', 'geraldog', 1);
 
 INSERT INTO everyman (tipo, titulo, body, creator, aceptable) VALUES
 ('Post', 'Ayudenme con mi proyecto', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 224211540, 1),
