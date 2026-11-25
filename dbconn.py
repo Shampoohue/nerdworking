@@ -280,9 +280,9 @@ def add_post(creator, title, body, tags, image):
     
     return add_edit_everyman(instruct, values, tags, image, False)
 
-def add_reply(creator, title, body, image):
-    instruct = "INSERT INTO everyman (tipo, titulo, body, creator) VALUES ('Respuesta', ?, ?, ?)"
-    values = (title, body, creator)
+def add_reply(creator, body, image):
+    instruct = "INSERT INTO everyman (tipo, titulo, body, creator) VALUES ('Respuesta', '', ?, ?)"
+    values = (body, creator)
     
     return add_edit_everyman(instruct, values, [], image, False)
 

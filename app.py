@@ -51,7 +51,6 @@ def make_reply(id):
 def create_post():
     user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
     if loggedin:
-        print(request.form.getlist('tags', ''))
         title = request.form.get('titulo', '').strip()
         if not title:
             return jsonify(error='Las publicaciones requieren un titulo'), 400
@@ -69,13 +68,9 @@ def create_post():
 def create_reply(id):
     user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
     if loggedin:
-        print(request.form)
-        title = request.form.get('titulo', '').strip()
-        if not title:
-            return jsonify(error='Las publicaciones requieren un titulo'), 400
         body = request.form.get('body', '').strip()
         image = request.files.get('image')
-        newid = add_reply(user["matricula"], title, body, image)
+        newid = add_reply(user["matricula"], body, image)
         add_reply_link(id, newid)
         return {"newreply":"success!"}
     else:

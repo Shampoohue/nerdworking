@@ -26,6 +26,8 @@
 
     <div class="bodytext">
         <textarea id="body" class="writer answerwrite newpostwriter bodytextwriter" placeholder="Texto" aria-label="Texto"></textarea>
+        <div class="image"><img id="showfile"></div>
+        <div id="clearimage" class="superweaktext" onclick="clear_image();"></div>
         <input id="tags" class="writer answerwrite newpostwriter" type="text" placeholder="Categorias" aria-label="Categorias">
     <div id="tagslist" class="tags"></div>
     </div>
@@ -55,6 +57,8 @@
         displayPicture(this);
     });
 
+    displayPicture(image);
+
     function displayPicture(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -62,9 +66,15 @@
             reader.onload = function (e) {
                 document.getElementById("showfile").setAttribute('src', e.target.result);
             };
-
+            document.getElementById("clearimage").innerHTML = "Descartar Imagen?";
             reader.readAsDataURL(input.files[0]);
         }
+    }
+
+    function clear_image(){
+        image.value = '';
+        document.getElementById("clearimage").innerHTML = "";
+        document.getElementById("showfile").removeAttribute('src');
     }
 
     function killtag(tag){

@@ -15,6 +15,7 @@ cursor = conn.cursor()
 print(dbcreation)
 
 cursor.executescript(dbcreation)
+conn.commit()
 
 cursor.close()
 conn.close()

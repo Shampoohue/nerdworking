@@ -97,6 +97,9 @@ INSERT INTO everyman (tipo, titulo, body, creator, imgfile, aceptable) VALUES
 INSERT INTO everyman (tipo, titulo, body, aceptable) VALUES
 ('Anuncio', '2026 NASA Space Apps Challenge', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 1);
 
+INSERT INTO everyman (tipo, titulo, body, creator, aceptable) VALUES
+('Perfil', 'Andy', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', 224205962, 1);
+
 INSERT INTO tags (term, tsuku) VALUES
 ('Python', 1), ('Flask', 1), ('JavaScript', 1), ('SQLite', 1), ('CSS', 1), ('HTML', 1),
 ('HTML', 2), ('CSS', 2), ('PostgreSQL', 2), ('MySQL', 2), ('Ubuntu', 2), ('VirtualBox', 2),
