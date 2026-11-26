@@ -281,6 +281,28 @@ a * {
     font-weight: bold;
 }
 
+.editar {
+    background-color: rgb(142, 160, 170);
+    color: rgba(70, 73, 80, 0.7); 
+}
+
+.eliminar {
+    background-color: #e86666!important;
+    color: #592828!important; 
+    margin-left: auto;
+    padding-bottom: 100rem;
+}
+
+.eliminar:hover {
+    background-color: #d03b4a!important;
+    color: #592828!important; 
+}
+
+.eliminar:active {
+    background-color: #81173a!important;
+    color: #371c29!important; 
+}
+
 .like.clicked {
     background-color: rgb(234, 169, 58);
     font-weight: bolder;
@@ -449,6 +471,11 @@ textarea.newpostwriter {
     width: 100%;
     height: auto;
     max-width: 100%;      
+}
+
+.notifhead {
+    background-color: rgb(234, 169, 58)!important;
+    color: rgb(63, 57, 45);
 }
 
 @media (max-width: 600px) {

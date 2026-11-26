@@ -2,7 +2,7 @@
 {% block posts %}
     <div class="card post mainpost">
     <div class="title"><div class="twoinone">
-        <a href="{{url_for('userpage', id=post.creador)}}"><div {% if (post.iconfile == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename='img/' + post.iconfile)}});" {% endif %} class="usericon"></div></a>
+        <a href="{{url_for('userpage', id=post.creador)}}"><div {% if (post.iconfile == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename=post.iconfile)}});" {% endif %} class="usericon"></div></a>
         <div><a href="{{url_for('userpage', id=post.creador)}}"><div class="weaktext superweaktext" id="mainnamedatecareer">{{post.nombre}} ー {{post.tiempo}}<br>{{post.carrera}}</div></a>{{post.titulo}}</div>
     </div></div>
     <div class="bodytext">{{post.body}}</div>
@@ -14,8 +14,12 @@
     </div>
     {% if loggedin %}
         <div class="answer">
-            <button value="{{post.interes}}" {% if post.interes == 1 %}class="like clicked"{% else %}class="like"{% endif %} onclick="clicklike(this, {{user.matricula}}, {{post.id}})">❤ <div class="meinteresa">Me interesa!</div></button>
-            <input id="answer" class="writer answerwrite" type="text" placeholder="Responde a esta publicación" aria-label="Search" onclick="open_response_maker({{post.id}});">
+            {% if post.creador == user.matricula %}
+                <button class="like editar" onclick="window.location.href = '/post/edit/' + {{post.id}};">⚙︎ <div class="meinteresa">Editar</div></button>
+            {% else %}
+                <button value="{{post.interes}}" {% if post.interes == 1 %}class="like clicked"{% else %}class="like"{% endif %} onclick="clicklike(this, {{user.matricula}}, {{post.id}})">❤ <div class="meinteresa">Me interesa!</div></button>
+            {% endif %}
+            <input id="answer" class="writer answerwrite" type="text" placeholder="Responde a esta publicación" aria-label="Search" onclick="window.location.href = '/reply/new/' + {{post.id}};">
         </div>
     {% endif %}
     </div></div>
@@ -24,7 +28,7 @@
         {% for r in responses %}
             <div class="card post">
                 <div class="title"><div class="twoinone">
-                    <a onclick="event.stopPropagation();" href="{{url_for('userpage', id=r.creador)}}"><div {% if (r.iconfile == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename='img/' + r.iconfile)}});" {% endif %} class="usericon"></div></a>
+                    <a onclick="event.stopPropagation();" href="{{url_for('userpage', id=r.creador)}}"><div {% if (r.iconfile == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename=r.iconfile)}});" {% endif %} class="usericon"></div></a>
                     <div><a onclick="event.stopPropagation();" href="{{url_for('userpage', id=r.creador)}}"><div class="weaktext superweaktext">{{r.nombre}} ー {{r.tiempo}}<br>{{r.carrera}}</div></a>{{r.titulo}}</div>
                 </div></div>
                 <div class="bodytext">{{r.body}}</div>

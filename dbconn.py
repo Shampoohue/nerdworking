@@ -243,7 +243,9 @@ def add_edit_everyman(instruct, textinput, tags, image, edited):
     tags2 = []
 
     saved_image = None
-    if image and image.filename:
+    if image == "keepimage":
+        pass
+    elif image and image.filename:
         ext = os.path.splitext(image.filename)[1].lower()
         if ext in {'.jpg', '.jpeg', '.png', '.gif', '.webp'}:
             unique_name = f"{uuid.uuid4().hex}{ext}"
@@ -255,6 +257,9 @@ def add_edit_everyman(instruct, textinput, tags, image, edited):
             }
             cursor.execute("UPDATE everyman SET imgfile = ? WHERE id = ?", (saved_image["url"], newid))
             conn.commit()
+    elif edited:
+        cursor.execute("UPDATE everyman SET imgfile = NULL WHERE id = ?", (newid,))
+        conn.commit()
 
     for tag in tags:
         tags2.append((newid, tag))
@@ -274,11 +279,26 @@ def add_edit_everyman(instruct, textinput, tags, image, edited):
     conn.close()
     return newid
 
+def remove_everyman(id):
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor = conn.execute("DELETE FROM everyman WHERE id = ?", (id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 def add_post(creator, title, body, tags, image):
     instruct = "INSERT INTO everyman (tipo, titulo, body, creator) VALUES ('Post', ?, ?, ?)"
     values = (title, body, creator)
     
     return add_edit_everyman(instruct, values, tags, image, False)
+
+def update_post(id, title, body, tags, image):
+    instruct = "UPDATE everyman SET titulo=?, body=?, edited=0, aceptable=0 WHERE id = ?"
+    values = (title, body, id)
+    print(image)
+
+    return add_edit_everyman(instruct, values, tags, image, True)
 
 def add_reply(creator, body, image):
     instruct = "INSERT INTO everyman (tipo, titulo, body, creator) VALUES ('Respuesta', '', ?, ?)"
@@ -304,13 +324,13 @@ def make_profile(tipo, titulo, body, creador, imgfile, tags):
 def get_user_login(matri, password):
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM usuario WHERE matricula=?", (matri,))
+    cursor.execute("SELECT u.*, p.imgfile FROM usuario u JOIN everyman p ON p.creator = u.matricula WHERE p.tipo='Perfil' AND matricula=?", (matri,))
     usu = {"matricula":0, "nombres":"", "apepaterno":"", "apematerno":"", "semestre":0, "carrera":"", "correo":"", "psswrd":"", "adminuser": 0}
     loggedin = False
     fetchone = cursor.fetchone()
     if not fetchone is None:
         i = 0
-        a = ["matricula", "nombres", "apepaterno", "apematerno", "semestre", "carrera", "correo", "psswrd", "adminuser"]
+        a = ["matricula", "nombres", "apepaterno", "apematerno", "semestre", "carrera", "correo", "psswrd", "adminuser", "iconfile"]
         usu = {}
         for f in fetchone:
             usu[a[i]] = f
@@ -340,7 +360,59 @@ def unlike_post(user, post):
 def make_notif(user, post, text):
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO interes (post, user, descr) VALUES (?, ?, ?)", (post, user, text))
+    cursor.execute("INSERT INTO notif (post, user, descr) VALUES (?, ?, ?)", (post, user, text))
     conn.commit()
     cursor.close()
     conn.close()
+
+def get_notif(user):
+    conn = get_db()
+    cursor = conn.cursor()
+    instruct = "SELECT post, descr, checked FROM notif WHERE user = ?;"
+    cursor.execute(instruct, (user,))
+    datos = cursor.fetchall()
+    notifs = []
+    for d in datos:
+        evrmn = get_everyman("""
+            SELECT p.id, p.titulo, p.body, p.creator, p.imgfile, CONCAT(u.nombres, ' ', u.apepaterno, ' ', u.apematerno), u.carrera, img.imgfile
+            FROM everyman p
+            LEFT JOIN usuario u ON u.matricula = p.creator
+            JOIN everyman img ON img.creator = p.creator
+            WHERE (p.aceptable = 1 OR p.creator = """ + str(user) +""") AND img.tipo = 'Perfil' AND p.id = """ + str(d[0]) + """;
+            """, ["id", "titulo", "body", "creador", "imagen", "nombre", "carrera", "iconfile"], True, True, True, user)[0]
+        evrmn["descr"] = d[1]
+        evrmn["checked"] = d[2]
+        notifs.append(evrmn)
+    cursor.close()
+    conn.close()
+    return notifs
+
+def get_notif_count(user):
+    conn = get_db()
+    cursor = conn.cursor()
+    instruct = "SELECT COUNT(*) FROM notif WHERE checked = 0 AND user = ?;"
+    cursor.execute(instruct, (user,))
+    dato = cursor.fetchone()[0]
+    cursor.close()
+    conn.close()
+    return dato
+
+def notif_check(id, loggedin, user):
+    if loggedin:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM notif WHERE user = ?", (user["matricula"],))
+        check = cursor.fetchone()
+        if not check is None:
+            cursor.execute("SELECT tipo FROM everyman WHERE id = ?", (id,))
+            notif = cursor.fetchone()
+            cursor.execute("UPDATE notif SET checked = 1 WHERE post = ?", (id,))
+            conn.commit()
+            match notif[0]:
+                case 'Post':
+                    return "post"
+                case 'Noticia':
+                    return "noticia"
+        cursor.close()
+        conn.close()
+    return "index"

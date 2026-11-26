@@ -34,9 +34,17 @@ def logout():
 def make_post():
     user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
     if loggedin:
-        return render_template("makepost.html", user=user)
-    else:
-        return redirect(url_for("index"))
+        return render_template("makepost.html", user=user, post={}, edited=False)
+    return redirect(url_for("index"))
+
+@app.route('/post/edit/<int:id>')
+def edit_post(id):
+    user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
+    if loggedin:
+        post = get_post(id, user["matricula"], user["adminuser"])
+        if post:
+            return render_template("makepost.html", user=user, post=post, edited=True)
+    return redirect(url_for("index"))
 
 @app.route('/reply/new/<int:id>')
 def make_reply(id):
@@ -44,8 +52,7 @@ def make_reply(id):
     if loggedin:
         post=get_post(id, user["matricula"], user["adminuser"])
         return render_template("makecomment.html", user=user, post=post)
-    else:
-        return redirect(url_for("index"))
+    return redirect(url_for("index"))
 
 @app.route('/api/posts/new', methods=['POST'])
 def create_post():
@@ -61,6 +68,38 @@ def create_post():
         newid = add_post(user["matricula"], title, body, tags, image)
 
         return {"newpost":newid}
+    else:
+        return jsonify(error='No tiene un usuario.'), 400
+
+@app.route('/api/posts/edit', methods=['POST'])
+def editing_post():
+    user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
+    if loggedin and int(user["matricula"]) == int(request.form.get('creador', 0)):
+        id = request.form.get('id', 0)
+        title = request.form.get('titulo', '').strip()
+        if not title:
+            return jsonify(error='Las publicaciones requieren un titulo'), 400
+        body = request.form.get('body', '').strip()
+        tags = request.form.getlist('tags')
+        image = request.form.get('image')
+        if image != "keepimage":
+            image = request.files.get('image')
+
+        newid = update_post(id, title, body, tags, image)
+
+        return {"newpost":newid}
+    else:
+        return jsonify(error='No tiene un usuario.'), 400
+
+@app.route('/api/posts/delete', methods=['POST'])
+def delete_post():
+    user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
+    if loggedin and int(user["matricula"]) == int(request.form.get('creador', 0)):
+        id = request.form.get('id', 0)
+
+        remove_everyman(id)
+
+        return {"deletedpost":"it was deleted"}
     else:
         return jsonify(error='No tiene un usuario.'), 400
 
@@ -83,7 +122,7 @@ def post(id):
     post=get_post(id, user["matricula"], user["adminuser"])
     if post is None:
         return redirect(url_for("index"))
-    return render_template("post.html", title=('NERDWORKING ー ' + post["titulo"]), user=user, loggedin=loggedin, id=id, post=post, responded=responded, responses=responses, likes=get_likes(id))
+    return render_template("post.html", title=('NERDWORKING ー ' + post["titulo"]), notifs=get_notif_count(user["matricula"]), user=user, loggedin=loggedin, id=id, post=post, responded=responded, responses=responses, likes=get_likes(id))
 
 @app.route("/noticia/<int:id>")
 def noticia(id):
@@ -91,7 +130,7 @@ def noticia(id):
     noticia=get_noticia(id)
     if noticia is None:
         return redirect(url_for("index"))
-    return render_template("noticia.html", title=('NERDWORKING ー ' + noticia["titulo"]), user=user, loggedin=loggedin, noticia=noticia, news=get_noticias())
+    return render_template("noticia.html", title=('NERDWORKING ー ' + noticia["titulo"]), notifs=get_notif_count(user["matricula"]), user=user, loggedin=loggedin, noticia=noticia, news=get_noticias())
 
 @app.route("/userpage/<int:id>")
 def userpage(id):
@@ -99,23 +138,39 @@ def userpage(id):
     profile=get_profile(id)
     if profile is None:
         return redirect(url_for("index"))
-    return render_template("userpage.html", title=('NERDWORKING ー ' + profile["nombre"]), user=user, loggedin=loggedin, profile=profile, posts=get_posts_by_user(id, user["matricula"], user["adminuser"]), news=get_noticias())
+    return render_template("userpage.html", title=('NERDWORKING ー ' + profile["nombre"]), notifs=get_notif_count(user["matricula"]), user=user, loggedin=loggedin, profile=profile, posts=get_posts_by_user(id, user["matricula"], user["adminuser"]), news=get_noticias())
 
 @app.route("/search/<search>")
 def search(search):
     user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
-    return render_template("index.html", title="NERDWORKING", user=user, loggedin=loggedin, posts=get_posts_search(search, user["matricula"], user["adminuser"]), news=get_noticias_search(search))
+    return render_template("index.html", title=("NERDWORKING ー buscando: " + search), notifs=get_notif_count(user["matricula"]), user=user, loggedin=loggedin, posts=get_posts_search(search, user["matricula"], user["adminuser"]), news=get_noticias_search(search))
 
 @app.route("/search/tags/<search>")
 def search_tags(search):
     print(search)
     user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
-    return render_template("index.html", title="NERDWORKING", user=user, loggedin=loggedin, posts=get_posts_search_tags(search, user["matricula"], user["adminuser"]), news=get_noticias_search_tags(search))
+    return render_template("index.html", title="NERDWORKING", notifs=get_notif_count(user["matricula"]), user=user, loggedin=loggedin, posts=get_posts_search_tags(search, user["matricula"], user["adminuser"]), news=get_noticias_search_tags(search))
+
+@app.route("/notif")
+def notif():
+    user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
+    if loggedin:
+        return render_template("notif.html", title="NERDWORKING ー notificaciones", user=user, loggedin=loggedin, notif=get_notif(user["matricula"]), notifs=get_notif_count(user["matricula"]))
+    else:
+        return redirect(url_for("index"))
+
+@app.route("/notif/<int:id>")
+def go_to_notif(id):
+    user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
+    notif = notif_check(id, loggedin, user)
+    if notif == "index":
+        return redirect(url_for(notif))
+    return redirect(url_for(notif, id=id))
 
 @app.route("/")
 def index():
     user, loggedin=get_user_login(session.get("matri", 0), session.get("password", ""))
-    return render_template("index.html", title="NERDWORKING", user=user, loggedin=loggedin, posts=get_posts(user["matricula"], user["adminuser"]), news=get_noticias())
+    return render_template("index.html", title="NERDWORKING", notifs=get_notif_count(user["matricula"]), user=user, loggedin=loggedin, posts=get_posts(user["matricula"], user["adminuser"]), news=get_noticias())
 
 @app.route("/api/like/<int:user>/<int:post>")
 def like(user, post):

@@ -19,26 +19,34 @@
         <div class="twoinone">
         <div class="usericon"></div>
         <div class="weaktext superweaktext">{{user.nombres}} {{user.apepaterno}} {{user.apematerno}}
-            <input id="titulo" class="writer answerwrite newpostwriter" type="text" placeholder="Titulo" aria-label="Titulo">
+            <input id="titulo" class="writer answerwrite newpostwriter" type="text" placeholder="Titulo" aria-label="Titulo" value="{% if post.titulo is defined and post.titulo %}{{post.titulo}}{% endif %}">
         </div>
         </div>
     </div>
 
     <div class="bodytext">
-        <textarea id="body" class="writer answerwrite newpostwriter bodytextwriter" placeholder="Texto" aria-label="Texto"></textarea>
-        <div class="image"><img id="showfile"></div>
-        <div id="clearimage" class="superweaktext" onclick="clear_image();"></div>
+        <textarea id="body" class="writer answerwrite newpostwriter bodytextwriter" placeholder="Texto" aria-label="Texto">{% if post.body is defined and post.body %}{{post.body}}{% endif %}</textarea>
+        <div class="image"><img id="showfile" src="{% if post.imagen is defined and post.imagen %}{{url_for('static', filename=post.imagen)}}{% endif %}"></div>
+        <div id="clearimage" class="superweaktext" onclick="clear_image();">{% if edited %}Descartar Imagen?{% endif %}</div>
         <input id="tags" class="writer answerwrite newpostwriter" type="text" placeholder="Categorias" aria-label="Categorias">
     <div id="tagslist" class="tags"></div>
     </div>
     <div class="buttons answer twoinone" style="height: 100%;">
-        <input type="file" id="image" name="file" accept="image/*" />
-        <button id="publicar" onclick="publishPost()">Publicar</button>
+        <input type="file" id="image" name="file" accept="image/*" value="{% if post.imagen is defined and post.imagen %}{{url_for('static', filename=post.imagen)}}{% endif %}"/>
+        <button id="publicar" onclick="publishPost()">{% if edited %}Guardar Cambios{% else %}Publicar{% endif %}</button><br>
+        {% if edited %}<button class="eliminar" id="eliminar" onclick="eliminarPost()">Eliminar</button>{% endif %}
     </div>
     </div></div>
 
     <script>
     const tags = [];
+    var imagedefault = true;
+
+    {% for t in post.tags %}tags.push("{{t}}"); {% endfor %}
+
+    for(let t in tags){
+        document.getElementById("tagslist").innerHTML += `<button onclick="killtag(this)" style="padding-bottom: 0%; padding: 2%;">` + tags[t] + `</button>`;
+    }
 
     document.getElementById("tags").addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
@@ -72,6 +80,7 @@
     }
 
     function clear_image(){
+        imagedefault = false;
         image.value = '';
         document.getElementById("clearimage").innerHTML = "";
         document.getElementById("showfile").removeAttribute('src');
@@ -102,17 +111,24 @@
 
         if(file) {
             formData.append('image', file);
+        } else if ({% if edited %}true{% else %}false{% endif %} && imagedefault) {
+            formData.append("image", "keepimage");
         } else {
-            formData.append('image', null);
+            formData.append("image", null);
         }
+
+        {% if edited %}
+        formData.append("id", {{post.id}});
+        formData.append("creador", {{post.creador}});
+        {% endif %}
 
         btn.disabled = true;
         try {
-            const res = await fetch('/api/posts/new', {
-            method: 'POST',
-            body: formData
-            });
-
+            const res = await fetch('/api/posts/{% if edited %}edit{% else %}new{% endif %}', {
+                    method: 'POST',
+                    body: formData
+                });
+            
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
                 throw new Error(err.error || ('HTTP ' + res.status));
@@ -124,6 +140,36 @@
         } catch (err) {
             console.error(err);
             alert('No se pudo publicar: ' + err.message);
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function eliminarPost() {
+        const btn = document.getElementById('publicar');
+
+        const formData = new FormData();
+        formData.append('id', {{post.id}});
+        formData.append("creador", {{post.creador}});
+
+        btn.disabled = true;
+        try {
+            const res = await fetch('/api/posts/delete', {
+                    method: 'POST',
+                    body: formData
+                });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || ('HTTP ' + res.status));
+            }
+
+            const data = await res.json();
+            window.location.href = "/";
+
+        } catch (err) {
+            console.error(err);
+            alert('No se pudo eliminar: ' + err.message);
         } finally {
             btn.disabled = false;
         }

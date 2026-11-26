@@ -29,7 +29,11 @@
             </div>
             {% if loggedin %}
                 <div class="answer">
-                    <button value="{{p.interes}}" {% if p.interes == 1 %}class="like clicked"{% else %}class="like"{% endif %} onclick="clicklike(this, {{user.matricula}}, {{p.id}})">❤ <div class="meinteresa">Me interesa!</div></button>
+                    {% if p.creador == user.matricula %}
+                        <button class="like editar" onclick="window.location.href = '/post/edit/' + {{p.id}};">⚙︎ <div class="meinteresa">Editar</div></button>
+                    {% else %}
+                        <button value="{{p.interes}}" {% if p.interes == 1 %}class="like clicked"{% else %}class="like"{% endif %} onclick="clicklike(this, {{user.matricula}}, {{p.id}})">❤ <div class="meinteresa">Me interesa!</div></button>
+                    {% endif %}
                     <input id="answer" class="writer answerwrite" type="text" placeholder="Responde a esta publicación" aria-label="Search" onclick="open_response_maker({{p.id}});">
                 </div>
             {% endif %}

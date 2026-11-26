@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS tiempo(
     hora INTEGER NOT NULL CHECK(hora >= 0 AND hora <= 23),
     min INTEGER NOT NULL CHECK(min >= 0 AND min <= 59),
     seg INTEGER NOT NULL CHECK(seg >= 0 AND seg <= 59),
-    everyman INTEGER NOT NULL UNIQUE,
+    everyman INTEGER NOT NULL,
     FOREIGN KEY (everyman) REFERENCES everyman(id) ON DELETE CASCADE
 );
 
@@ -115,5 +115,7 @@ INSERT INTO tiempo (año, mes, dia, hora, min, seg, everyman) VALUES
 
 INSERT INTO respuesta (response, responded) VALUES (4, 1);
 
-INSERT INTO interes (post, user) VALUES (5, 224211540);
-INSERT INTO interes (post, user) VALUES (1, 224204735);
+INSERT INTO interes (post, user) VALUES 
+(5, 224211540), (1, 224204735);
+
+INSERT INTO notif (post, user, descr) VALUES (1, 224204735, "notificacion de prueba");
