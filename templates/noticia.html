@@ -3,6 +3,7 @@
     <div class="card post mainpost">
         <div class="title">{{ noticia.titulo }}</div>
         <div class="bodytext">{{ noticia.body }}</div>
+        {% if noticia.imagen != None %}<div class="image"><img src="{{url_for('static', filename=noticia.imagen)}}"></div>{% endif %}
         <div class="tags">
         {% for t in noticia.tags %}
             <a href="{{url_for('search_tags', search=t)}}"><button>{{ t }}</button></a>

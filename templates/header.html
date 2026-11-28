@@ -1,32 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <link rel="icon" type="image/png" href="{{url_for('static', filename='img/icon.png')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
-</head>
-<body style="background-image: url({{url_for('static', filename='img/campana.png')}});">
+{% extends "headnbody.html" %}
+{% block inside %}
     <header>
         <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;"><img style="height: 1.3rem;" src="{{url_for('static', filename='img/icon.png')}}">NERDWORKING</div></a>
         <input id="search" class="writer" type="text" placeholder="🔍︎ Busqueda" aria-label="Search">
-        {% if loggedin %}<a href="{{url_for('userpage', id=user.matricula)}}"><div class="twoinone"><div>{{user.nombres}}<br>{{user.apepaterno}}<br>{{user.apematerno}}</div><div style="width: 3.5rem; height: 3.5rem; background-image: {% if (user.iconfile == None) %}url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename=user.iconfile)}});" {% endif %} class="usericon"></div></div></a>{% else %}<div class="buttons" id="headerbuttons"><button id="signup">Registrate</button><a href="{{url_for('login', next=request.path)}}"><button id="signin">Inicia Sesión</button></a></div>{% endif %}
+        {% if loggedin %}
+        <a style="display: grid; grid-auto-flow: column; justify-content: end;" href="{{url_for('userpage', id=user.matricula)}}"><div class="buttons" id="headerbuttons">{{user.nombres}} {{user.apepaterno}} {{user.apematerno}}<br>{{user.correo}}<div style="width: 3.5rem; height: 3.5rem; {% if user.iconfile is defined and user.iconfile %} background-image: url({{url_for('static', filename=user.iconfile)}}); {% endif %}" class="usericon"></div></div></a>
+        {% else %}
+        <div class="buttons" id="headerbuttons"><a href="{{url_for('signin')}}"><button id="signup">Registrate</button></a><a href="{{url_for('login', next=request.path)}}"><button id="signin">Inicia Sesión</button></a></div>
+        {% endif %}
     </header>
     <div class="notheader" id="notheader">
         <div id="other" class="maincolumn other">{% if loggedin %}
                 <a href="{{url_for('userpage', id=user.matricula)}}"><div class="card others"><div class="usersets">🖹 Mis Publicaciones</div></div></a>
                 <a href="{{url_for('notif')}}"><div class="card others"><div class="usersets">🔔︎ Notificaciones {% if notifs > 0 %}({{notifs}}){% endif %}</div></div></a>
                 <div class="card others"><div class="usersets">🗨︎ Mensajes</div></div>
-                <div class="card others"><div class="usersets">⚙︎ Configuración</div></div>
+                <a href="{{url_for('userconfig')}}"><div class="card others"><div class="usersets">⚙︎ Configuración</div></div></a>
                 {% endif %}
         </div>
-        <div id="posts" class="maincolumn posts">
-            {% block posts %}{% endblock %}
+        <div class="maincolumn content">
+        {% block content %}{% endblock %}
         </div>
-        <div class="maincolumn anun"><div id="news" class="card">
-            {% block news %}{% endblock %}
-        </div></div>
     </div>
     <script>
         document.getElementById("search").addEventListener('keydown', function (event) {
@@ -41,6 +34,4 @@
             }
         });
     </script>
-    <script src="{{url_for('static', filename='script.js')}}"></script>
-</body> 
-</html>
+{% endblock %}

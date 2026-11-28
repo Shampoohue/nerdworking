@@ -1,8 +1,8 @@
-{% extends "header.html" %}
+{% extends "header2.html" %}
 {% block posts %}
     <div class="card post mainpost">
     <div class="title"><div class="twoinone">
-        <a href="{{url_for('userpage', id=post.creador)}}"><div {% if (post.iconfile == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename=post.iconfile)}});" {% endif %} class="usericon"></div></a>
+        <a href="{{url_for('userpage', id=post.creador)}}"><div {% if post.iconfile is defined and post.iconfile %} style="background-image: url({{url_for('static', filename=post.iconfile)}});" {% endif %} class="usericon"></div></a>
         <div><a href="{{url_for('userpage', id=post.creador)}}"><div class="weaktext superweaktext" id="mainnamedatecareer">{{post.nombre}} ー {{post.tiempo}}<br>{{post.carrera}}</div></a>{{post.titulo}}</div>
     </div></div>
     <div class="bodytext">{{post.body}}</div>
@@ -28,7 +28,7 @@
         {% for r in responses %}
             <div class="card post">
                 <div class="title"><div class="twoinone">
-                    <a onclick="event.stopPropagation();" href="{{url_for('userpage', id=r.creador)}}"><div {% if (r.iconfile == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename=r.iconfile)}});" {% endif %} class="usericon"></div></a>
+                    <a onclick="event.stopPropagation();" href="{{url_for('userpage', id=r.creador)}}"><div {% if r.iconfile is defined and r.iconfile %} style="background-image: url({{url_for('static', filename=r.iconfile)}});" {% endif %} class="usericon"></div></a>
                     <div><a onclick="event.stopPropagation();" href="{{url_for('userpage', id=r.creador)}}"><div class="weaktext superweaktext">{{r.nombre}} ー {{r.tiempo}}<br>{{r.carrera}}</div></a>{{r.titulo}}</div>
                 </div></div>
                 <div class="bodytext">{{r.body}}</div>

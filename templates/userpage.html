@@ -2,11 +2,11 @@
 {% block middle %}
     <div class="card"><div class="title">
         <div class="twoinone">
-            <div class="usericon" {% if (profile.imagen == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename='img/' + profile.imagen)}});" {% endif %}></div>
+            <div class="usericon" {% if profile.imagen is defined and profile.imagen %} style="background-image: url({{url_for('static', filename=profile.imagen)}});" {% endif %}></div>
             <div>{{profile.titulo}}<br>
             <div class="weaktext">
                 <div class="superweaktext">{{profile.nombre}} ー {{profile.carrera}}<br>
-                Semestre #{{profile.semestre}}<br></div></div></div></div>
+                Semestre #{{profile.semestre}}<br>{{profile.correo}}<br></div></div></div></div>
                 <div class="weaktext">{{profile.body}}</div>
         <div class="tags" style="font-size: 60%; font-weight: lighter;">
             {% for t in profile.tags %}
@@ -17,7 +17,7 @@
     {% for p in posts %}
         <div class="card post" onclick="window.location.href = '/post/' + {{p.id}};">
             <div class="title"><div class="twoinone">
-                <a onclick="event.stopPropagation();" href="{{url_for('userpage', id=p.creador)}}"><div {% if (p.iconfile == None) %}style="background-image: url({{url_for('static', filename='img/icon.png')}});"{% else %} style="background-image: url({{url_for('static', filename='img/' + p.iconfile)}});" {% endif %} class="usericon" onclick="event.stopPropagation();"></div></a>
+                <a onclick="event.stopPropagation();" href="{{url_for('userpage', id=p.creador)}}"><div {% if p.iconfile is defined and p.iconfile %} style="background-image: url({{url_for('static', filename=p.iconfile)}});" {% endif %} class="usericon"></div></a>
                 <div><a onclick="event.stopPropagation();" href="{{url_for('userpage', id=p.creador)}}"><div class="weaktext superweaktext">{{p.nombre}} ー {{p.tiempo}}<br>{{p.carrera}}</div></a>{{p.titulo}}</div>
             </div></div>
             <div class="bodytext">{{p.body}}</div>

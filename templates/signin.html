@@ -1,0 +1,82 @@
+{% extends "headnbody.html" %}
+{% block inside %}
+    <header>
+        <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;">NERDWORKING</div></a>
+    </header>
+    <div class="centerbox"><div class="card iteminblockage" style="width: 80%; height: 100%;">
+        <div class="title" style="padding: 5%;"><div style="display:flex; justify-content: center;">NERDWORKING</div><br><div class="weaktext superweaktext" style="display:flex; justify-content: center;">Registración</div></div>
+        <div style="padding: 3%;"><div class="bodytext superweaktext">Escriba su numero de matricula de la unison</div>
+        <input id="matricula" class="writer answerwrite newpostwriter" type="number" placeholder="Matricula" aria-label="Matricula">
+        <div class="bodytext superweaktext">Escriba su nombre o nombres</div>
+        <input id="nombre" class="writer answerwrite newpostwriter" type="text" placeholder="Nombre o nombres" aria-label="Nombre o nombres">
+        <div class="bodytext superweaktext">Escriba su apellido paterno</div>
+        <input id="apepaterno" class="writer answerwrite newpostwriter" type="text" placeholder="Apellido paterno" aria-label="Apellido paterno">
+        <div class="bodytext superweaktext">Escriba su apellido materno</div>
+        <input id="apematerno" class="writer answerwrite newpostwriter" type="text" placeholder="Apellido materno" aria-label="Apellido materno">
+        <div class="bodytext superweaktext">Escriba su carrera</div>
+        <select class="otherbutton answerwrite newpostwriter" id="carrera">
+            {% for c in carreras %}<option>{{c}}</option>{% endfor %}
+        </select>
+        <div class="bodytext superweaktext">Escriba su semestre</div>
+        <input id="semestre" class="writer answerwrite newpostwriter" type="number" placeholder="Semestre" aria-label="Semestre">
+        <div class="bodytext superweaktext">Escriba su contraseña</div>
+        <input id="password" class="writer answerwrite newpostwriter" type="password" placeholder="Contraseña" aria-label="Contraseña">
+        <div class="bodytext superweaktext">Confirme su contraseña</div>
+        <input id="passwordconfirm" class="writer answerwrite newpostwriter" type="password" placeholder="Confirme su contraseña" aria-label="Contraseña"></div>
+        <div class="buttons answer" style="justify-content: right;">
+            <button id="signinbtn" onclick="signin()">Registrame</button>
+        </div>
+    </div></div>
+
+    <script>    
+    async function signin() {
+        const matricula = document.getElementById('matricula').value.trim();
+        const nombre = document.getElementById('nombre').value.trim();
+        const apepaterno = document.getElementById('apepaterno').value.trim();
+        const apematerno = document.getElementById('apematerno').value.trim();
+        const carrera = document.getElementById('carrera').value.trim();
+        const semestre = document.getElementById('semestre').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const passwordconfirm = document.getElementById('passwordconfirm').value.trim();
+        const btn = document.getElementById('signinbtn');
+
+        if (!matricula || !nombre || !apepaterno || !apematerno || !carrera || !semestre || !password || !passwordconfirm) {
+            alert('Por favor llene todos los campos.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('matricula', matricula);
+        formData.append('nombre', nombre);
+        formData.append('apepaterno', apepaterno);
+        formData.append('apematerno', apematerno);
+        formData.append('carrera', carrera);
+        formData.append('semestre', semestre);
+        formData.append('password', password);
+        formData.append('passwordconfirm', passwordconfirm);
+
+        btn.disabled = true;
+        try {
+            const res = await fetch('/api/signin', {
+            method: 'POST',
+            body: formData
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || ('HTTP ' + res.status));
+            }
+
+            const data = await res.json();
+            console.log('Sign in:', data.loggedin);
+
+        } catch (err) {
+            console.error(err);
+            alert('Error al crear cuenta: ' + err.message);
+        } finally {
+            btn.disabled = false;
+            window.location.href = '{{url_for('userconfig')}}';
+        }
+    }
+    </script>
+{% endblock %}

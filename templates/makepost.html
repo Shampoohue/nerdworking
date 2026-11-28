@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <link rel="icon" type="image/png" href="{{url_for('static', filename='img/icon.png')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='styles.css')}}">
-</head>
-<body style="background-image: url({{url_for('static', filename='img/campana.png')}});">
+{% extends "headnbody.html" %}
+{% block inside %}
     <header>
         <a href="{{url_for('index')}}"><div class="logo" style="justify-self: start;">NERDWORKING</div></a>
     </header>
@@ -17,7 +9,7 @@
     <div class="title">
         <a href="{{url_for('index')}}"><button class="cancelbutton">X</button></a>
         <div class="twoinone">
-        <div class="usericon"></div>
+        <div {% if user.iconfile is defined and user.iconfile %} style="background-image: url({{url_for('static', filename=user.iconfile)}});" {% endif %} class="usericon"></div>
         <div class="weaktext superweaktext">{{user.nombres}} {{user.apepaterno}} {{user.apematerno}}
             <input id="titulo" class="writer answerwrite newpostwriter" type="text" placeholder="Titulo" aria-label="Titulo" value="{% if post.titulo is defined and post.titulo %}{{post.titulo}}{% endif %}">
         </div>
@@ -65,8 +57,6 @@
         displayPicture(this);
     });
 
-    displayPicture(image);
-
     function displayPicture(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -78,6 +68,8 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    displayPicture(image);
 
     function clear_image(){
         imagedefault = false;
@@ -175,5 +167,4 @@
         }
     }
     </script>
-</body>
-</html>
+{% endblock %}

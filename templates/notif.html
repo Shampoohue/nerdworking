@@ -1,16 +1,16 @@
 {% extends "header.html" %}
-{% block posts %}
+{% block content %}
     {% for n in notif %}
         {% set postid = n.post if n.post is defined else n.id %}
         <div class="card post" onclick="window.location.href = '/notif/' + {{ postid }};">
-            {% if n.descr is defined and n.descr %}<div class="title {% if n.checked == 0 %}notifhead{% endif %}">🔔︎ {{ n.descr }}</div>{% endif %}
+            {% if n.descr is defined and n.descr %}<div class="title notifhead{% if n.checked == 0 %} unchecked{% endif %}">🔔︎ {{ n.descr }}</div>{% endif %}
             <div class="title"><div class="twoinone">
                 {% if n.creador is defined and n.creador %}
-                <a onclick="event.stopPropagation();" href="{{ url_for('userpage', id=n.creador) }}"><div {% if n.iconfile is defined and n.iconfile %}style="background-image: url({{ url_for('static', filename='img/' + n.iconfile) }});"{% else %}style="background-image: url({{ url_for('static', filename='img/icon.png') }});"{% endif %} class="usericon" onclick="event.stopPropagation();"></div></a>
+                <a onclick="event.stopPropagation();" href="{{ url_for('userpage', id=n.creador) }}"><div {% if n.iconfile is defined and n.iconfile %}style="background-image: url({{ url_for('static', filename=n.iconfile) }});"{% else %}style="background-image: url({{ url_for('static', filename='img/icon.png') }});"{% endif %} class="usericon" onclick="event.stopPropagation();"></div></a>
                 {% else %}
-                <div {% if n.iconfile is defined and n.iconfile %}style="background-image: url({{ url_for('static', filename='img/' + n.iconfile) }});"{% else %}style="background-image: url({{ url_for('static', filename='img/icon.png') }});"{% endif %} class="usericon"></div>
+                <div {% if n.iconfile is defined and n.iconfile %}style="background-image: url({{ url_for('static', filename='img/' + n.iconfile) }});"{% endif %} class="usericon"></div>
                 {% endif %}
-                <div>{% if n.nombre is defined and n.nombre %}<div class="weaktext superweaktext">{{ n.nombre }} ー {{ n.tiempo }}<br>{{ n.carrera }}</div>{% endif %}{{ n.titulo }}</div>
+                <div>{% if n.nombre is defined and n.nombre %}<div class="weaktext superweaktext">{{ n.nombre }} ー {{ n.tiempo }} ー {{ n.carrera }}</div>{% endif %}{{ n.titulo }}</div>
             </div></div>
             {% if n.body is defined and n.body %}<div class="bodytext">{{ n.body }}</div>{% endif %}
             {% if n.imagen is defined and n.imagen != None %}<div class="image"><img src="{{ url_for('static', filename=n.imagen) }}"></div>{% endif %}

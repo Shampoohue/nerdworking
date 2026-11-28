@@ -6,7 +6,7 @@ import os, uuid
 UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-def get_db():
+def __get_db():
     conn = sqlite3.connect("nerdworking.db")
     conn.row_factory = sqlite3.Row
     return conn
@@ -65,9 +65,8 @@ def maketimestr(dttiempo):
         tiempo += str(timecom.seconds) + " segundos"
     return tiempo
 
-
 def get_everyman(instruct, categories, cutbody, hastime, hastags, likeid=0):
-    conn = get_db() 
+    conn = __get_db() 
     cursor = conn.cursor()
     cursor.execute(instruct)
     datos = cursor.fetchall()
@@ -114,7 +113,7 @@ def get_everyman(instruct, categories, cutbody, hastime, hastags, likeid=0):
                 everyman["interes"] = 0
             else:
                 everyman["interes"] = likedatos[0]
-            timecursor.close()
+            likecursor.close()
         
         posts.append(everyman)
     cursor.close()
@@ -168,7 +167,7 @@ def get_responses(id):
     return not not responses, responses
 
 def get_likes(id):
-    conn = get_db() 
+    conn = __get_db() 
     cursor = conn.cursor()
     cursor.execute("SELECT u.matricula AS matricula, CONCAT(u.nombres, ' ', u.apepaterno, ' ', u.apematerno) AS nombre FROM interes i JOIN usuario u ON u.matricula = i.user WHERE interesado = 1 AND post = " + str(id) + ";")
     fetchall = cursor.fetchall()
@@ -213,11 +212,11 @@ def get_noticia(id):
 
 def get_profile(id):
     return get_everyman("""
-        SELECT p.id, p.titulo, p.body, p.creator, p.imgfile, CONCAT(u.nombres, ' ', u.apepaterno, ' ', u.apematerno), u.carrera, u.semestre
+        SELECT p.id, p.titulo, p.body, p.creator, p.imgfile, CONCAT(u.nombres, ' ', u.apepaterno, ' ', u.apematerno), u.carrera, u.semestre, u.correo
         FROM everyman p
         LEFT JOIN usuario u ON u.matricula = p.creator
         WHERE p.aceptable = 1 AND p.tipo = 'Perfil' AND p.creator = """ + str(id) + """;
-    """, ["id", "titulo", "body", "creador", "imagen", "nombre", "carrera", "semestre"], False, False, True)[0]
+    """, ["id", "titulo", "body", "creador", "imagen", "nombre", "carrera", "semestre", "correo"], False, False, True)[0]
 
 def get_posts_by_user(id, userid, admin):
     return get_everyman("""
@@ -230,8 +229,8 @@ def get_posts_by_user(id, userid, admin):
         ORDER BY t.año DESC, t.mes DESC, t.dia DESC, t.hora DESC, t.min DESC, t.seg DESC;
     """, ["id", "titulo", "body", "creador", "imagen", "nombre", "carrera", "iconfile"], True, True, True, userid)
 
-def add_edit_everyman(instruct, textinput, tags, image, edited):
-    conn = get_db()
+def add_edit_everyman(instruct, textinput, tags, image, edited, addtime=True):
+    conn = __get_db()
     cursor = conn.cursor()
     cursor.execute(instruct, textinput)
     conn.commit()
@@ -268,10 +267,7 @@ def add_edit_everyman(instruct, textinput, tags, image, edited):
             cursor.execute("DELETE FROM tags WHERE tsuku = ?", (newid,))
         cursor.executemany("INSERT INTO tags (tsuku, term) VALUES (?, ?)", tags2)
         conn.commit()
-    if edited:
-        cursor.execute("UPDATE everyman SET edited = 1 WHERE id = " + newid + ";")
-        conn.commit()
-    else:
+    elif addtime:
         now = datetime.datetime.now()
         cursor.execute("INSERT INTO tiempo (año, mes, dia, hora, min, seg, everyman) VALUES (?, ?, ?, ?, ?, ?, ?)", (now.year, now.month, now.day, now.hour, now.minute, now.second, newid,))
         conn.commit()
@@ -280,7 +276,7 @@ def add_edit_everyman(instruct, textinput, tags, image, edited):
     return newid
 
 def remove_everyman(id):
-    conn = get_db()
+    conn = __get_db()
     cursor = conn.cursor()
     cursor = conn.execute("DELETE FROM everyman WHERE id = ?", (id,))
     conn.commit()
@@ -294,11 +290,28 @@ def add_post(creator, title, body, tags, image):
     return add_edit_everyman(instruct, values, tags, image, False)
 
 def update_post(id, title, body, tags, image):
-    instruct = "UPDATE everyman SET titulo=?, body=?, edited=0, aceptable=0 WHERE id = ?"
+    instruct = "UPDATE everyman SET titulo=?, body=?, edited=1, aceptable=0 WHERE id = ?"
     values = (title, body, id)
-    print(image)
-
     return add_edit_everyman(instruct, values, tags, image, True)
+
+def update_profile(user, title, body, tags, image):
+    conn = __get_db()
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM everyman WHERE tipo = 'Perfil' AND creator = ?", (user,))
+    id = cursor.fetchone()[0]
+    cursor.close()
+    conn.close()
+    instruct = "UPDATE everyman SET titulo=?, body=? WHERE id = ?"
+    values = (title, body, id)
+    add_edit_everyman(instruct, values, tags, image, True)
+
+def update_user(id, career, semester):
+    conn = __get_db()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE usuario SET carrera = ?, semestre = ? WHERE matricula = ?", (career, semester, id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def add_reply(creator, body, image):
     instruct = "INSERT INTO everyman (tipo, titulo, body, creator) VALUES ('Respuesta', '', ?, ?)"
@@ -307,25 +320,34 @@ def add_reply(creator, body, image):
     return add_edit_everyman(instruct, values, [], image, False)
 
 def add_reply_link(responded, response):
-    conn = get_db()
+    conn = __get_db()
     cursor = conn.cursor()
     cursor.execute("INSERT INTO respuesta (responded, response) VALUES (?, ?)", (responded, response,))
     conn.commit()
     cursor.close()
     conn.close()
 
-def make_profile(tipo, titulo, body, creador, imgfile, tags):
+def make_profile(nombre, creador):
     instruct = """
-        INSERT INTO everyman (tipo, titulo, body, creador, imgfile) VALUES (?, ?, ?, ?, ?) 
+        INSERT INTO everyman (tipo, body, aceptable, titulo, creator) VALUES ('Perfil', '', 1, ?, ?) 
     """
-    words = (tipo, titulo, body, creador, imgfile)
-    return add_edit_everyman(instruct, words, tags, False)
+    values = (nombre, creador)
+    return add_edit_everyman(instruct, values, [], None, False, False)
+
+def make_user(userdata):
+    conn = __get_db()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO usuario (matricula, nombres, apepaterno, apematerno, carrera, semestre, psswrd) VALUES (?, ?, ?, ?, ?, ?, ?)", userdata)
+    conn.commit()
+    make_profile((userdata[1] + " " + userdata[2] + " " + userdata[3]), userdata[0])
+    cursor.close()
+    conn.close()
 
 def get_user_login(matri, password):
-    conn = get_db()
+    conn = __get_db()
     cursor = conn.cursor()
     cursor.execute("SELECT u.*, p.imgfile FROM usuario u JOIN everyman p ON p.creator = u.matricula WHERE p.tipo='Perfil' AND matricula=?", (matri,))
-    usu = {"matricula":0, "nombres":"", "apepaterno":"", "apematerno":"", "semestre":0, "carrera":"", "correo":"", "psswrd":"", "adminuser": 0}
+    usu = {"matricula":0, "nombres":"", "apepaterno":"", "apematerno":"", "semestre":0, "carrera":"", "correo":"", "psswrd":"", "adminuser": 0, "iconfile":""}
     loggedin = False
     fetchone = cursor.fetchone()
     if not fetchone is None:
@@ -342,7 +364,7 @@ def get_user_login(matri, password):
     return usu, loggedin
 
 def like_post(user, post):
-    conn = get_db()
+    conn = __get_db()
     cursor = conn.cursor()
     cursor.execute("INSERT INTO interes (post, user) VALUES (?, ?)", (post, user,))
     conn.commit()
@@ -350,7 +372,7 @@ def like_post(user, post):
     conn.close()
 
 def unlike_post(user, post):
-    conn = get_db()
+    conn = __get_db()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM interes WHERE post=? AND user=?", (post, user,))
     conn.commit()
@@ -358,7 +380,7 @@ def unlike_post(user, post):
     conn.close()
 
 def make_notif(user, post, text):
-    conn = get_db()
+    conn = __get_db()
     cursor = conn.cursor()
     cursor.execute("INSERT INTO notif (post, user, descr) VALUES (?, ?, ?)", (post, user, text))
     conn.commit()
@@ -366,7 +388,7 @@ def make_notif(user, post, text):
     conn.close()
 
 def get_notif(user):
-    conn = get_db()
+    conn = __get_db()
     cursor = conn.cursor()
     instruct = "SELECT post, descr, checked FROM notif WHERE user = ?;"
     cursor.execute(instruct, (user,))
@@ -388,7 +410,7 @@ def get_notif(user):
     return notifs
 
 def get_notif_count(user):
-    conn = get_db()
+    conn = __get_db()
     cursor = conn.cursor()
     instruct = "SELECT COUNT(*) FROM notif WHERE checked = 0 AND user = ?;"
     cursor.execute(instruct, (user,))
@@ -399,7 +421,7 @@ def get_notif_count(user):
 
 def notif_check(id, loggedin, user):
     if loggedin:
-        conn = get_db()
+        conn = __get_db()
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM notif WHERE user = ?", (user["matricula"],))
         check = cursor.fetchone()

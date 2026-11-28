@@ -1,0 +1,9 @@
+{% extends "header.html" %}
+{% block content %}
+    <div id="posts" class="maincolumn posts">
+        {% block posts %}{% endblock %}
+    </div>
+    <div class="maincolumn anun"><div id="news" class="card">
+        {% block news %}{% endblock %}
+    </div></div>
+{% endblock %}

@@ -1,0 +1,138 @@
+{% extends "header.html" %}
+{% block content %}
+    <div class="card" style="width: 70%; height: 88%;"><div class="title">
+    <div class="twoinone">
+        <div><div id="usericon2" class="usericon bigusericon" {% if profile.imagen is defined and profile.imagen %} style="background-image: url({{url_for('static', filename=profile.imagen)}});" {% endif %}></div>
+        <div id="clearimage" class="weaktext superweaktext" onclick="clear_image();">{% if profile.imagen is defined and profile.imagen %}Descartar Imagen?{% endif %}</div></div>
+        <div><input id="titulo" class="writer answerwrite newpostwriter" type="text" placeholder="Apodo" aria-label="Apodo" value="{% if profile.titulo is defined and profile.titulo %}{{profile.titulo}}{% endif %}"><br>
+        <div class="weaktext">
+            {{user.nombres}} {{user.apepaterno}} {{user.apematerno}}<br>
+            <div class="superweaktext">Carrera: <select class="otherbutton answerwrite newpostwriter" id="carrera">{% for c in carreras %}<option {% if user.carrera is defined and user.carrera and user.carrera == c %}selected{% endif %}>{{c}}</option>{% endfor %}</select><br>
+            Semestre: <input id="semestre" class="writer answerwrite newpostwriter" type="number" placeholder="Semestre" aria-label="Semestre" value="{% if user.semestre is defined and user.semestre %}{{user.semestre}}{% endif %}">
+            <br></div></div></div></div>
+            <div class="weaktext">
+                <textarea id="body" class="writer answerwrite newpostwriter bodytextwriter" placeholder="Una breve descripción de ti mismo..." aria-label="Texto">{% if profile.body is defined and profile.body %}{{profile.body}}{% endif %}</textarea>
+            </div>
+    <div class="weaktext"><input id="tags" class="writer answerwrite newpostwriter" type="text" placeholder="Categorias" aria-label="Categorias"></div>
+    <div id="tagslist" style="font-size: 60%; font-weight: lighter;" class="tags"></div>
+    </div>
+
+    <div class="buttons answer twoinone">
+        <input type="file" id="image" name="file" accept="image/*" value="{% if profile.imagen is defined and profile.imagen %}{{url_for('static', filename=profile.imagen)}}{% endif %}"/>
+        <button id="publicar" onclick="editProfile()" class="whydoesitturnintoanevilmoldspore">Guardar Cambios</button>
+    </div><div class="buttons answer" style="padding-right: 3rem; padding-bottom: 3rem; padding-top: 2rem; height: 12%;">
+        <button class="eliminar" id="eliminar" style="padding: 1.5rem!important;" onclick="window.location.href = '{{url_for('logout')}}';">Cerrar Sesión</button>
+    </div>
+    </div>
+
+    <script>
+    const tags = [];
+    var imagedefault = true;
+
+    {% for t in profile.tags %}tags.push("{{t}}"); {% endfor %}
+
+    for(let t in tags){
+        document.getElementById("tagslist").innerHTML += `<button onclick="killtag(this)" style="padding-bottom: 0%; padding: 2%;">` + tags[t] + `</button>`;
+    }
+
+    document.getElementById("tags").addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            let tag = document.getElementById("tags").value.trim();
+            if(!tags.includes(tag)){
+                document.getElementById("tagslist").innerHTML += `<button onclick="killtag(this)" style="padding-bottom: 0%; padding: 2%;">` + tag + `</button>`;
+                tags.push(tag);
+            }
+            document.getElementById("tags").value = "";
+        }
+    });
+
+    const image = document.getElementById("image");
+
+    image.addEventListener('change', function () {
+        displayPicture(this);
+    });
+
+    function displayPicture(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById("usericon2").style.backgroundImage = `url(${e.target.result})`;
+            };
+            document.getElementById("clearimage").innerHTML = "Descartar Imagen?";
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    displayPicture(image);
+
+    function clear_image(){
+        imagedefault = false;
+        image.value = '';
+        document.getElementById("clearimage").innerHTML = "";
+        document.getElementById("usericon2").style.backgroundImage = "";
+    }
+
+    function killtag(tag){
+        tags.pop(tag.value);
+        tag.remove();
+    }
+    
+    async function editProfile() {
+        const titulo = document.getElementById('titulo').value.trim();
+        const body = document.getElementById('body').value.trim();
+        const semestre = document.getElementById('semestre').value.trim();
+        const carrera = document.getElementById('carrera').value.trim();
+        const file = image.files[0]; 
+        const btn = document.getElementById('publicar');
+
+        if (!carrera) {
+            alert('Es imposible ser un estudiante sin una carrera.');
+            return;
+        }
+        if (!semestre) {
+            alert('Es imposible ser un estudiante sin un semestre.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('titulo', titulo);
+        formData.append('body', body);
+        formData.append('semestre', semestre);
+        formData.append('carrera', carrera);
+        if (Array.isArray(tags) && tags.length) {
+            tags.forEach(t => formData.append('tags', t));
+        }
+
+        if(file) {
+            formData.append('image', file);
+        } else if ({% if edited %}true{% else %}false{% endif %} && imagedefault) {
+            formData.append("image", "keepimage");
+        } else {
+            formData.append("image", null);
+        }
+
+        btn.disabled = true;
+        try {
+            const res = await fetch('/api/user/edit', {
+                    method: 'POST',
+                    body: formData
+                });
+            
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.error || ('HTTP ' + res.status));
+            }
+            const data = await res.json();
+            console.log(data)
+            window.location.href = "/userpage/" + {{user.matricula}};
+
+        } catch (err) {
+            console.error(err);
+            alert('No se pudo editar el perfil: ' + err.message);
+        } finally {
+            btn.disabled = false;
+        }
+    }
+    </script>
+{% endblock %}

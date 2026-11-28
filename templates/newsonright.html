@@ -1,4 +1,4 @@
-{% extends "header.html" %}
+{% extends "header2.html" %}
 {% block posts %}
     {% block middle %}{% endblock %}
 {% endblock %}
@@ -8,6 +8,7 @@
         <a href="{{url_for('noticia', id=n.id)}}"><div class="bodytext anuncio">
             <div class="title">{{ n.titulo }}</div>
             {{ n.body }}
+            {% if n.imagen != None %}<div class="image"><img src="{{url_for('static', filename=n.imagen)}}"></div>{% endif %}
             <div onclick="event.stopPropagation();"><div class="tags">
                 {% for t in n.tags %}
                     <a href="{{url_for('search_tags', search=t)}}"><button>{{ t }}</button></a>
