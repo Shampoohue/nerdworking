@@ -32,14 +32,14 @@
     {% for t in profile.tags %}tags.push("{{t}}"); {% endfor %}
 
     for(let t in tags){
-        document.getElementById("tagslist").innerHTML += `<button onclick="killtag(this)" style="padding-bottom: 0%; padding: 2%;">` + tags[t] + `</button>`;
+        document.getElementById("tagslist").innerHTML += `<button value="` + tags[t] + `" onclick="killtag(this)" style="padding-bottom: 0%; padding: 2%;">` + tags[t] + `</button>`;
     }
 
     document.getElementById("tags").addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
             let tag = document.getElementById("tags").value.trim();
             if(!tags.includes(tag)){
-                document.getElementById("tagslist").innerHTML += `<button onclick="killtag(this)" style="padding-bottom: 0%; padding: 2%;">` + tag + `</button>`;
+                document.getElementById("tagslist").innerHTML += `<button value="` + tags[t] + `" onclick="killtag(this)" style="padding-bottom: 0%; padding: 2%;">` + tag + `</button>`;
                 tags.push(tag);
             }
             document.getElementById("tags").value = "";
@@ -74,8 +74,12 @@
     }
 
     function killtag(tag){
-        tags.pop(tag.value);
+        let index = tags.indexOf(tag.value);
+        if (index > -1) {
+            tags.splice(index, 1); 
+        }
         tag.remove();
+        console.log(tags);
     }
     
     async function editProfile() {
@@ -106,7 +110,7 @@
 
         if(file) {
             formData.append('image', file);
-        } else if ({% if edited %}true{% else %}false{% endif %} && imagedefault) {
+        } else if (imagedefault) {
             formData.append("image", "keepimage");
         } else {
             formData.append("image", null);
